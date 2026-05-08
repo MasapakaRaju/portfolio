@@ -114,7 +114,7 @@ public class DataSeeder implements CommandLineRunner {
         exp1.setDisplayOrder(1);
 
         Experience exp2 = new Experience();
-        exp2.setCompany("OpenText (XCP Product)");
+        exp2.setCompany("OpenText");
         exp2.setRole("Engineering Intern");
         exp2.setLocation("India");
         exp2.setStartDate("Mar 2025");
