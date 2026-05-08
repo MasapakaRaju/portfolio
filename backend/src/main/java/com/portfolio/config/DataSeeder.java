@@ -46,7 +46,7 @@ public class DataSeeder implements CommandLineRunner {
         info.setEmail("masapakaraju28@gmail.com");
         info.setPhone("+91 9515281863");
         info.setGithubUrl("https://github.com/MasapakaRaju");
-        info.setLinkedinUrl("https://linkedin.com/in/raju-masapaka");
+        info.setLinkedinUrl("https://linkedin.com/in/raju-m-588343250/");
         info.setResumeUrl("#");
         info.setAbout(
             "Backend Engineer with experience in designing and developing scalable REST APIs " +
