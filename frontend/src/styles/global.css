@@ -6,9 +6,9 @@
   --bg-card-hover: #1d292f;
   --accent-teal: #2dd4bf;
   --accent-amber: #f6c453;
-  --accent-coral: #ff6b5f;
+  --accent-coral: #ff2b46;
   --accent-green: #7bd88f;
-  --accent-gradient: linear-gradient(135deg, #2dd4bf, #f6c453 52%, #ff6b5f);
+  --accent-gradient: linear-gradient(135deg, #ff2b46, #f6c453 52%, #2dd4bf);
   --text-primary: #f5f1e8;
   --text-secondary: #b8c0bd;
   --text-muted: #77817e;
@@ -45,6 +45,14 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+@media (pointer: fine) {
+  body,
+  a,
+  button {
+    cursor: none;
+  }
 }
 
 body::before {
@@ -128,7 +136,7 @@ section {
   justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   font-size: 0.95rem;
   font-weight: 700;
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
@@ -137,26 +145,28 @@ section {
 }
 
 .btn-primary {
-  background: var(--accent-gradient);
-  color: #09100f;
+  background: #ff2b46;
+  color: #fff;
   border: 1px solid transparent;
-  box-shadow: 0 12px 30px rgba(45, 212, 191, 0.18);
+  box-shadow: 0 12px 30px rgba(255, 43, 70, 0.22);
+  text-transform: uppercase;
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 45px rgba(246, 196, 83, 0.2);
+  box-shadow: 0 18px 45px rgba(255, 43, 70, 0.28);
 }
 
 .btn-outline {
-  background: rgba(245, 241, 232, 0.035);
+  background: rgba(245, 241, 232, 0.02);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
+  text-transform: uppercase;
 }
 
 .btn-outline:hover {
-  border-color: var(--accent-teal);
-  color: var(--accent-teal);
+  border-color: #ff2b46;
+  color: #ff2b46;
   transform: translateY(-3px);
 }
 

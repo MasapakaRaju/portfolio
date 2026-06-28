@@ -6,11 +6,11 @@ interface NavbarProps {
 }
 
 const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
+  { label: 'My Story', href: '#about' },
+  { label: 'Stack', href: '#skills' },
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contacts', href: '#contact' },
 ]
 
 export default function Navbar({ name }: NavbarProps) {
@@ -29,9 +29,8 @@ export default function Navbar({ name }: NavbarProps) {
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <a href="#hero" className="navbar-logo">
-          <span className="logo-bracket">&lt;</span>
-          {name.split(' ')[0]}
-          <span className="logo-bracket">/&gt;</span>
+          {name.split(' ')[0].toUpperCase()}-
+          <span>{name.split(' ')[1]?.charAt(0) ?? 'M'}</span>
         </a>
 
         <nav className={`navbar-nav ${menuOpen ? 'open' : ''}`}>

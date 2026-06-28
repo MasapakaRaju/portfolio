@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import type { PersonalInfo } from '../../types'
 import './Hero.css'
 
@@ -6,53 +5,37 @@ interface HeroProps {
   personalInfo: PersonalInfo
 }
 
-const roles = ['Java Backend Engineer', 'Spring Boot Specialist', 'API Performance Builder', 'AI-Assisted Developer']
-
 const metrics = [
-  { value: '12+', label: 'Production APIs' },
-  { value: '20+', label: 'SQL Queries Tuned' },
-  { value: '15+', label: 'Issues Resolved' },
+  { value: '12+', label: 'REST APIs' },
+  { value: '20+', label: 'SQL Wins' },
+  { value: '10K+', label: 'Records' },
 ]
 
 export default function Hero({ personalInfo }: HeroProps) {
-  const [roleIndex, setRoleIndex] = useState(0)
-  const [displayed, setDisplayed] = useState('')
-  const [deleting, setDeleting] = useState(false)
-
-  useEffect(() => {
-    const current = roles[roleIndex]
-    let timeout: ReturnType<typeof setTimeout>
-
-    if (!deleting && displayed.length < current.length) {
-      timeout = setTimeout(() => setDisplayed(current.slice(0, displayed.length + 1)), 70)
-    } else if (!deleting && displayed.length === current.length) {
-      timeout = setTimeout(() => setDeleting(true), 1800)
-    } else if (deleting && displayed.length > 0) {
-      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 34)
-    } else if (deleting && displayed.length === 0) {
-      setDeleting(false)
-      setRoleIndex(i => (i + 1) % roles.length)
-    }
-
-    return () => clearTimeout(timeout)
-  }, [displayed, deleting, roleIndex])
+  const [firstName, lastName] = personalInfo.name.toUpperCase().split(' ')
+  const lastInitial = lastName?.charAt(0) ?? 'M'
+  const lastRest = lastName?.slice(1) ?? ''
 
   return (
     <section className="hero" id="hero">
       <div className="hero-bg" />
+      <div className="hero-dot-field" aria-hidden="true" />
       <div className="container hero-content">
         <div className="hero-copy">
-          <p className="hero-greeting">Backend systems, performance, and product-minded engineering</p>
-          <h1 className="hero-name">{personalInfo.name}</h1>
-          <h2 className="hero-role">
-            <span className="typing">{displayed}</span>
-            <span className="cursor">|</span>
-          </h2>
-          <p className="hero-tagline">{personalInfo.tagline}</p>
+          <p className="hero-greeting">Java Backend Engineer. Builder of fast APIs.</p>
+          <h1 className="hero-name" aria-label={personalInfo.name}>
+            <span>{firstName}</span>
+            <span>
+              <em>{lastInitial}</em>{lastRest}
+            </span>
+          </h1>
+          <p className="hero-tagline">
+            {personalInfo.tagline}
+          </p>
 
           <div className="hero-actions">
-            <a href="#projects" className="btn btn-primary">View Projects</a>
-            <a href="#contact" className="btn btn-outline">Contact Me</a>
+            <a href="#projects" className="btn btn-primary">See the Work</a>
+            <a href={personalInfo.leetcodeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">LeetCode</a>
           </div>
 
           <div className="hero-socials">
@@ -68,17 +51,19 @@ export default function Hero({ personalInfo }: HeroProps) {
           </div>
         </div>
 
-        <div className="hero-console" aria-label="Engineering profile snapshot">
-          <div className="console-topbar">
-            <span />
-            <span />
-            <span />
+        <div className="hero-visual" aria-label="Developer profile visual">
+          <div className="portrait-halo" />
+          <div className="portrait">
+            <div className="portrait-head">
+              <span>MR</span>
+            </div>
+            <div className="portrait-neck" />
           </div>
-          <div className="console-code">
-            <p><span>engineer</span> = "Java Backend"</p>
-            <p><span>stack</span> = ["Spring Boot", "PostgreSQL", "Docker"]</p>
-            <p><span>focus</span> = "high-throughput APIs"</p>
-            <p><span>workflow</span> = "AI-assisted delivery"</p>
+          <div className="hero-code-strip">
+            <span>SPRING_BOOT</span>
+            <span>POSTGRESQL</span>
+            <span>DOCKER</span>
+            <span>AI_WORKFLOWS</span>
           </div>
           <div className="hero-metrics">
             {metrics.map(metric => (
