@@ -9,6 +9,8 @@ import Experience from './components/Experience/Experience'
 import Projects from './components/Projects/Projects'
 import Contact from './components/Contact/Contact'
 import Footer from './components/Footer/Footer'
+import CustomCursor from './components/Effects/CustomCursor'
+import ScrollProgress from './components/Effects/ScrollProgress'
 
 export default function App() {
   const [data, setData] = useState<PortfolioData | null>(null)
@@ -42,6 +44,8 @@ export default function App() {
 
   return (
     <>
+      <ScrollProgress />
+      <CustomCursor />
       <Navbar name={data.personalInfo.name} />
       <main>
         <Hero personalInfo={data.personalInfo} />
