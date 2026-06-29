@@ -22,7 +22,7 @@ export default function Hero({ personalInfo }: HeroProps) {
       <div className="hero-dot-field" aria-hidden="true" />
       <div className="container hero-content">
         <div className="hero-copy">
-          <p className="hero-greeting">Java Backend Engineer. Builder of fast APIs.</p>
+          <p className="hero-greeting">Java Backend Engineer. Builder of RESTFull-APIs.</p>
           <h1 className="hero-name" aria-label={personalInfo.name}>
             <span>{firstName}</span>
             <span>
