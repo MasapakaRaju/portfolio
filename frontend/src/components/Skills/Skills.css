@@ -111,4 +111,16 @@ section#skills {
     grid-column: 1 / -1;
     grid-row: 2;
   }
+}@media (max-width: 420px) {
+  .skill-category {
+    padding: 20px;
+  }
+
+  .skill-tag {
+    gap: 8px;
+  }
+
+  .skill-percent {
+    font-size: 0.72rem;
+  }
 }

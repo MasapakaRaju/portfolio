@@ -217,4 +217,21 @@
     flex-direction: column;
     gap: 2px;
   }
+}@media (max-width: 480px) {
+  .about-grid {
+    gap: 28px;
+  }
+
+  .avatar-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+  }
+
+  .stat-card {
+    padding: 22px 16px;
+  }
 }

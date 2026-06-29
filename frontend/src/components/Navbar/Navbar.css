@@ -139,3 +139,14 @@
     font-size: 0.82rem;
   }
 }
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+
+  .navbar-nav {
+    width: min(280px, 100%);
+    padding: 80px 16px 24px;
+  }
+}

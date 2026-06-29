@@ -168,4 +168,16 @@ section#experience {
   .exp-meta {
     align-items: flex-start;
   }
+}@media (max-width: 480px) {
+  .timeline {
+    padding-left: 24px;
+  }
+
+  .timeline-dot {
+    left: -28px;
+  }
+
+  .timeline-card {
+    padding: 22px;
+  }
 }

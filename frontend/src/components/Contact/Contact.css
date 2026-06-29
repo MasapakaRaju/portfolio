@@ -217,3 +217,19 @@ section#contact {
     padding: 24px;
   }
 }
+
+@media (max-width: 360px) {
+  .contact-form {
+    padding: 18px;
+  }
+
+  .contact-item {
+    gap: 12px;
+  }
+
+  .contact-item-icon,
+  .social-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
