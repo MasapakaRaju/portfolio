@@ -381,16 +381,26 @@
   .hero {
     padding-top: 96px;
     padding-bottom: 28px;
+    overflow-x: hidden;
   }
 
   .hero-dot-field {
-    width: 120%;
-    left: -10%;
+    width: 100%;
+    left: 0;
     top: 14%;
+  }
+
+  .hero-content {
+    max-width: 100%;
   }
 
   .hero-name {
     font-size: clamp(2.8rem, 16vw, 4.6rem);
+    width: 100%;
+  }
+
+  .hero-name span {
+    white-space: normal;
   }
 
   .hero-copy {
