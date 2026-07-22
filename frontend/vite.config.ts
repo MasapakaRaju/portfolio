@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/my-portfolio/',  // ← ADD THIS LINE
+  base: '/my-portfolio/',
   server: {
     proxy: {
       '/api': {

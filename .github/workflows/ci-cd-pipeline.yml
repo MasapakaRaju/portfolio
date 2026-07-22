@@ -297,19 +297,33 @@ jobs:
   notify:
     name: Send Notifications
     runs-on: ubuntu-latest
-    needs: [deploy-to-github-pages]
+    needs: [frontend-build, frontend-lint, backend-build, backend-test, security-scan, deploy-render, deploy-to-github-pages]
     if: always()
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Determine job status
-        id: status
+      - name: Check job results and build message
+        id: check
         run: |
-          if [ "${{ needs.deploy-to-github-pages.result }}" == "success" ]; then
-            echo "status=SUCCESS" >> $GITHUB_OUTPUT
+          JOBS="frontend-build=${{ needs.frontend-build.result }} frontend-lint=${{ needs.frontend-lint.result }} backend-build=${{ needs.backend-build.result }} backend-test=${{ needs.backend-test.result }} security-scan=${{ needs.security-scan.result }} deploy-render=${{ needs.deploy-render.result }} deploy-to-github-pages=${{ needs.deploy-to-github-pages.result }}"
+
+          FAILED_JOB=""
+          FAILED_STAGE=""
+          ALL_SUCCESS=true
+
+          for job in $JOBS; do
+            name="${job%%=*}"
+            result="${job##*=}"
+            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
+              ALL_SUCCESS=false
+              FAILED_JOB="$name"
+              break
+            fi
+          done
+
+          if [ "$ALL_SUCCESS" = true ]; then
+            echo "outcome=success" >> $GITHUB_OUTPUT
           else
-            echo "status=FAILURE" >> $GITHUB_OUTPUT
+            echo "outcome=failure" >> $GITHUB_OUTPUT
+            echo "failed_job=$FAILED_JOB" >> $GITHUB_OUTPUT
           fi
 
       - name: Send Slack notification
@@ -317,52 +331,58 @@ jobs:
         if: always()
         with:
           payload: |
-            {
-              "text": "Portfolio Pipeline ${{ steps.status.outputs.status }}",
+            ${{ steps.check.outputs.outcome == 'success' && format('{
+              "text": "Portfolio Pipeline SUCCEEDED",
               "blocks": [
                 {
                   "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Portfolio CI/CD Pipeline"
-                  }
+                  "text": { "type": "plain_text", "text": "Portfolio Deployed Successfully" }
                 },
                 {
                   "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Status:*\n${{ steps.status.outputs.status }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Commit:*\n${{ github.sha }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Author:*\n${{ github.actor }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Branch:*\n${{ github.ref }}"
-                    }
-                  ]
+                  "text": { "type": "mrkdwn", "text": "*All stages passed.*\nYour portfolio is live and updated." }
                 },
                 {
                   "type": "actions",
                   "elements": [
                     {
                       "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Workflow"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                      "text": { "type": "plain_text", "text": "View Portfolio" },
+                      "url": "https://masapakaraju.github.io/my-portfolio/",
+                      "style": "primary"
+                    },
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow" },
+                      "url": "{0}/{1}/actions/runs/{2}"
                     }
                   ]
                 }
               ]
-            }
+            }', github.server_url, github.repository, github.run_id) || format('{
+              "text": "Portfolio Pipeline FAILED",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "Pipeline Failed" }
+                },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": "*Failed Stage:* `{0}`\n*Author:* {1}\n*Branch:* {2}" }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Logs" },
+                      "url": "{3}/{4}/actions/runs/{5}",
+                      "style": "danger"
+                    }
+                  ]
+                }
+              ]
+            }', steps.check.outputs.failed_job, github.actor, github.ref, github.server_url, github.repository, github.run_id) }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
