@@ -81,7 +81,6 @@ jobs:
   # ==================== BACKEND ====================
   backend-build:
     name: Backend - Build
-    needs: frontend-lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -252,7 +251,7 @@ jobs:
   deploy-to-github-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: docker-build
+    needs: deploy-render
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     permissions:
       contents: read
