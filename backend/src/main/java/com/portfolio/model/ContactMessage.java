@@ -20,6 +20,7 @@ public class ContactMessage {
 
     private String name;
     private String email;
+    private String phone;
     private String subject;
 
     @Column(columnDefinition = "TEXT")
