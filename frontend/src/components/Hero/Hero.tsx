@@ -30,7 +30,6 @@ export default function Hero({ personalInfo }: HeroProps) {
 
           <div className="hero-actions">
             <a href="#projects" className="btn btn-primary">View Projects</a>
-            <a href={personalInfo.leetcodeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">LeetCode</a>
           </div>
 
           <div className="hero-socials">
