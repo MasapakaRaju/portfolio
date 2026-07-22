@@ -152,7 +152,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    needs: backend-test
+    needs: [ backend-test,  frontend-lint ]
     permissions:
       contents: read
       security-events: write

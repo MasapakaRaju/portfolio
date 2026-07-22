@@ -1,6 +1,7 @@
 import type { ContactForm, PortfolioData } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const RAW_BASE = import.meta.env.VITE_API_URL || '';
+const BASE_URL = RAW_BASE ? RAW_BASE.replace(/\/+$/, '') + '/api' : '/api';
 const PORTFOLIO_CACHE_KEY = 'portfolio:data';
 const DEFAULT_RETRIES = 4;
 const REQUEST_TIMEOUT_MS = 30000;
