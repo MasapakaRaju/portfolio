@@ -229,7 +229,9 @@ jobs:
 
       - name: Run OWASP Dependency Check (Backend)
         working-directory: ./backend
-        run: mvn org.owasp:dependency-check-maven:check || echo "Dependency check completed with warnings"
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: mvn org.owasp:dependency-check-maven:check
         continue-on-error: true
 
       - name: Setup Node.js
