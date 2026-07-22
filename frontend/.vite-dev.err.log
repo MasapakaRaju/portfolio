@@ -4,3 +4,43 @@ Error: getaddrinfo ENOTFOUND my-portfolio-backend-1b1v.onrender.com
 [2m10:41:59 am[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
 Error: getaddrinfo ENOTFOUND my-portfolio-backend-1b1v.onrender.com
     at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+[2m4:20:29 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:29 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:31 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:31 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:34 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:34 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:38 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:38 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:43 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)
+[2m4:20:43 pm[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /api/portfolio[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7)

@@ -3,13 +3,13 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  base: '/my-portfolio/',  // ← ADD THIS LINE
   server: {
-    port: 5173,
     proxy: {
       '/api': {
-        target: 'https://my-portfolio-backend-1b1v.onrender.com',
+        target: 'http://localhost:8080',
         changeOrigin: true,
-      },
-    },
-  },
+      }
+    }
+  }
 })
