@@ -145,21 +145,7 @@ public class DataSeeder implements CommandLineRunner {
         ));
         exp2.setDisplayOrder(2);
 
-        Experience exp3 = new Experience();
-        exp3.setCompany("Argonix Labs");
-        exp3.setRole("Software Engineering Intern");
-        exp3.setLocation("Remote");
-        exp3.setStartDate("Apr 2024");
-        exp3.setEndDate("Jun 2024");
-        exp3.setIsCurrent(false);
-        exp3.setDescription("Contributed to backend utilities, REST API integrations, and SQL-driven data processing systems.");
-        exp3.setHighlights(Arrays.asList(
-            "Built and improved backend utilities supporting REST API integrations and SQL-driven data workflows",
-            "Worked with data processing systems handling 2K+ structured records"
-        ));
-        exp3.setDisplayOrder(3);
-
-        experienceRepository.saveAll(Arrays.asList(exp1, exp2, exp3));
+        experienceRepository.saveAll(Arrays.asList(exp1, exp2));
     }
 
     private void seedProjects() {
@@ -200,7 +186,7 @@ public class DataSeeder implements CommandLineRunner {
         p3.setDisplayOrder(3);
 
         Project p4 = new Project();
-        p4.setName("Cloud Portfolio Platform");
+        p4.setName("Portfolio");
         p4.setDescription(
             "Full-stack portfolio platform powered by a Spring Boot REST API, React + TypeScript frontend, " +
             "PostgreSQL persistence, Docker builds, Render backend deployment, and Netlify frontend delivery."
