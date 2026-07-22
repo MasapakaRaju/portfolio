@@ -13,6 +13,12 @@ env:
   JAVA_VERSION: '17'
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+
 jobs:
   # ==================== FRONTEND ====================
   frontend-build:
@@ -162,16 +168,18 @@ jobs:
       - name: Cache OWASP NVD Data
         uses: actions/cache@v4
         with:
-          path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: ${{ runner.os }}-owasp-nvd-${{ hashFiles('backend/pom.xml') }}
+          path: |
+            ~/.dependency-check
+            ~/.m2/repository/org/owasp/dependency-check-data
+          key: ${{ runner.os }}-dependency-check-${{ hashFiles('backend/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-owasp-nvd-
+            ${{ runner.os }}-dependency-check-
 
       - name: Run OWASP Dependency Check (Backend)
         working-directory: ./backend
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-        run: mvn org.owasp:dependency-check-maven:check -DnvdApiKey=${{ secrets.NVD_API_KEY }} -q
+        run: mvn org.owasp:dependency-check-maven:check -q
         timeout-minutes: 15
         continue-on-error: true
 
@@ -195,6 +203,44 @@ jobs:
         working-directory: ./frontend
         run: npm audit --audit-level=moderate || echo "npm audit completed"
         continue-on-error: true
+
+
+  docker-build:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Backend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+
+      - name: Build & Push Frontend Image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+
 
   # ==================== DEPLOYMENT ====================
   deploy-to-github-pages:
