@@ -1,19 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ContactForm, PersonalInfo } from '../../types'
-import { submitContact } from '../../api/portfolio'
+import { submitContact, verifyContact } from '../../api/portfolio'
 import './Contact.css'
 
 interface ContactProps {
   personalInfo: PersonalInfo
 }
 
-const initialForm: ContactForm = { name: '', email: '', subject: '', message: '' }
+const initialForm: ContactForm = { name: '', email: '', phone: '', subject: '', message: '' }
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const phonePattern = /^\+?[1-9]\d{7,14}$/
 
 export default function Contact({ personalInfo }: ContactProps) {
   const ref = useRef<HTMLElement>(null)
   const [form, setForm] = useState<ContactForm>(initialForm)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [statusMsg, setStatusMsg] = useState('')
+  const [formErrors, setFormErrors] = useState<Partial<Record<keyof ContactForm, string>>>({})
+  const [verificationPending, setVerificationPending] = useState(false)
+  const [verificationCode, setVerificationCode] = useState('')
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,20 +30,78 @@ export default function Contact({ personalInfo }: ContactProps) {
   }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+    const field = e.target.name as keyof ContactForm
+    setForm(f => ({ ...f, [field]: e.target.value }))
+    setFormErrors(errors => ({ ...errors, [field]: undefined }))
+    if (verificationPending) {
+      setVerificationPending(false)
+      setVerificationCode('')
+      setStatus('idle')
+      setStatusMsg('')
+    }
+  }
+
+  const validateForm = () => {
+    const errors: Partial<Record<keyof ContactForm, string>> = {}
+    const phone = form.phone.replace(/[\s()-]/g, '')
+
+    ;(['name', 'email', 'phone', 'subject', 'message'] as const).forEach(field => {
+      if (!form[field].trim()) errors[field] = 'This field is required'
+    })
+    if (form.email && !emailPattern.test(form.email.trim())) errors.email = 'Enter a valid email address'
+    if (form.phone && !phonePattern.test(phone)) errors.phone = 'Enter a valid mobile number'
+
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!validateForm()) {
+      setStatus('error')
+      setStatusMsg('Complete all required fields using valid details.')
+      return
+    }
+
+    const contactData = {
+      name: form.name.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.replace(/[\s()-]/g, ''),
+      subject: form.subject.trim(),
+      message: form.message.trim(),
+    }
+
     setStatus('loading')
     try {
-      const res = await submitContact(form)
+      const res = await submitContact(contactData)
       setStatus('success')
       setStatusMsg(res.message)
-      setForm(initialForm)
+      setForm(contactData)
+      setVerificationPending(true)
     } catch (err) {
       setStatus('error')
       setStatusMsg(err instanceof Error ? err.message : 'Something went wrong.')
+    }
+  }
+
+  const handleVerification = async () => {
+    if (!/^\d{6}$/.test(verificationCode)) {
+      setStatus('error')
+      setStatusMsg('Enter the six-digit verification code from your email.')
+      return
+    }
+
+    setStatus('loading')
+    try {
+      const res = await verifyContact(form.email, verificationCode)
+      setStatus('success')
+      setStatusMsg(res.message)
+      setForm(initialForm)
+      setVerificationCode('')
+      setVerificationPending(false)
+    } catch (err) {
+      setStatus('error')
+      setStatusMsg(err instanceof Error ? err.message : 'Unable to verify your email.')
     }
   }
 
@@ -107,36 +170,55 @@ export default function Contact({ personalInfo }: ContactProps) {
             </div>
           </div>
 
-          <form className="contact-form fade-in" onSubmit={handleSubmit}>
+          <form className="contact-form fade-in" onSubmit={handleSubmit} noValidate>
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <input
                   id="name" name="name" type="text" placeholder="Your name"
                   value={form.name} onChange={handleChange} required
+                  aria-invalid={Boolean(formErrors.name)} aria-describedby={formErrors.name ? 'name-error' : undefined}
                 />
+                {formErrors.name && <span className="form-error" id="name-error">{formErrors.name}</span>}
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <input
                   id="email" name="email" type="email" placeholder="your@email.com"
                   value={form.email} onChange={handleChange} required
+                  aria-invalid={Boolean(formErrors.email)} aria-describedby={formErrors.email ? 'email-error' : undefined}
                 />
+                {formErrors.email && <span className="form-error" id="email-error">{formErrors.email}</span>}
               </div>
             </div>
-            <div className="form-group">
-              <label htmlFor="subject">Subject</label>
-              <input
-                id="subject" name="subject" type="text" placeholder="What's this about?"
-                value={form.subject} onChange={handleChange} required
-              />
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="phone">Mobile Number</label>
+                <input
+                  id="phone" name="phone" type="tel" inputMode="tel" placeholder="+91 98765 43210"
+                  value={form.phone} onChange={handleChange} required
+                  aria-invalid={Boolean(formErrors.phone)} aria-describedby={formErrors.phone ? 'phone-error' : undefined}
+                />
+                {formErrors.phone && <span className="form-error" id="phone-error">{formErrors.phone}</span>}
+              </div>
+              <div className="form-group">
+                <label htmlFor="subject">Subject</label>
+                <input
+                  id="subject" name="subject" type="text" placeholder="What's this about?"
+                  value={form.subject} onChange={handleChange} required
+                  aria-invalid={Boolean(formErrors.subject)} aria-describedby={formErrors.subject ? 'subject-error' : undefined}
+                />
+                {formErrors.subject && <span className="form-error" id="subject-error">{formErrors.subject}</span>}
+              </div>
             </div>
             <div className="form-group">
               <label htmlFor="message">Message</label>
               <textarea
                 id="message" name="message" rows={6} placeholder="Your message..."
                 value={form.message} onChange={handleChange} required
+                aria-invalid={Boolean(formErrors.message)} aria-describedby={formErrors.message ? 'message-error' : undefined}
               />
+              {formErrors.message && <span className="form-error" id="message-error">{formErrors.message}</span>}
             </div>
 
             {status !== 'idle' && (
@@ -145,9 +227,25 @@ export default function Contact({ personalInfo }: ContactProps) {
               </div>
             )}
 
-            <button type="submit" className="btn btn-primary submit-btn" disabled={status === 'loading'}>
-              {status === 'loading' ? 'Sending...' : 'Send Message'}
-            </button>
+            {verificationPending ? (
+              <div className="verification-panel">
+                <label htmlFor="verification-code">Email Verification Code</label>
+                <div className="verification-actions">
+                  <input
+                    id="verification-code" type="text" inputMode="numeric" autoComplete="one-time-code"
+                    maxLength={6} placeholder="000000" value={verificationCode}
+                    onChange={event => setVerificationCode(event.target.value.replace(/\D/g, ''))}
+                  />
+                  <button type="button" className="btn btn-primary" onClick={handleVerification} disabled={status === 'loading'}>
+                    {status === 'loading' ? 'Verifying...' : 'Verify & Send'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button type="submit" className="btn btn-primary submit-btn" disabled={status === 'loading'}>
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
+              </button>
+            )}
           </form>
         </div>
       </div>

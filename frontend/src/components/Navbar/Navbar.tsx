@@ -29,8 +29,7 @@ export default function Navbar({ name }: NavbarProps) {
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <a href="#hero" className="navbar-logo">
-          {name.split(' ')[0].toUpperCase()}-
-          <span>{name.split(' ')[1]?.charAt(0) ?? 'M'}</span>
+          <span>{name}</span>
         </a>
 
         <nav className={`navbar-nav ${menuOpen ? 'open' : ''}`}>

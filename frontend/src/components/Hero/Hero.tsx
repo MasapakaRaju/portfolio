@@ -13,28 +13,23 @@ const metrics = [
 
 export default function Hero({ personalInfo }: HeroProps) {
   const [firstName, lastName] = personalInfo.name.toUpperCase().split(' ')
-  const lastInitial = lastName?.charAt(0) ?? 'M'
-  const lastRest = lastName?.slice(1) ?? ''
 
   return (
     <section className="hero" id="hero">
       <div className="hero-bg" />
-      <div className="hero-dot-field" aria-hidden="true" />
+      <div className="hero-orbit hero-orbit-one" aria-hidden="true" />
+      <div className="hero-orbit hero-orbit-two" aria-hidden="true" />
       <div className="container hero-content">
         <div className="hero-copy">
-          <p className="hero-greeting">Java Backend Engineer. Builder of RESTFull-APIs.</p>
+          <p className="hero-greeting">A backend engineer who likes systems, speed, and clean delivery.</p>
           <h1 className="hero-name" aria-label={personalInfo.name}>
             <span>{firstName}</span>
-            <span>
-              <em>{lastInitial}</em>{lastRest}
-            </span>
+            <span>{lastName}</span>
           </h1>
-          <p className="hero-tagline">
-            {personalInfo.tagline}
-          </p>
+          <p className="hero-tagline">{personalInfo.tagline}</p>
 
           <div className="hero-actions">
-            <a href="#projects" className="btn btn-primary">See the Work</a>
+            <a href="#projects" className="btn btn-primary">View Projects</a>
             <a href={personalInfo.leetcodeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">LeetCode</a>
           </div>
 
@@ -51,19 +46,10 @@ export default function Hero({ personalInfo }: HeroProps) {
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Developer profile visual">
-          <div className="portrait-halo" />
-          <div className="portrait">
-            <div className="portrait-head">
-              <span>MR</span>
-            </div>
-            <div className="portrait-neck" />
-          </div>
-          <div className="hero-code-strip">
-            <span>SPRING_BOOT</span>
-            <span>POSTGRESQL</span>
-            <span>DOCKER</span>
-            <span>AI_WORKFLOWS</span>
+        <div className="hero-visual" aria-label="Masapaka Raju portrait">
+          <div className="hero-photo-frame">
+            <div className="hero-photo-glow" aria-hidden="true" />
+            <img src="/MasapakaRajuHero.png" alt="Masapaka Raju" className="hero-photo" />
           </div>
           <div className="hero-metrics">
             {metrics.map(metric => (

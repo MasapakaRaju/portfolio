@@ -5,14 +5,15 @@
   right: 0;
   z-index: 1000;
   padding: 18px 0;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .navbar.scrolled {
-  background: rgba(30, 35, 39, 0.86);
+  background: rgba(18, 14, 28, 0.88);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 12px 0;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
 }
 
 .navbar-container {
@@ -25,35 +26,33 @@
 }
 
 .navbar-logo {
-  font-size: 1.35rem;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  color: #f8f4ff;
+  font-size: 1.3rem;
   font-weight: 950;
-  color: #f7f7f7;
-  transition: color var(--transition);
   letter-spacing: 0;
 }
 
 .navbar-logo span {
-  color: #ff2b46;
-}
-
-.navbar-logo:hover {
-  color: #fff;
+  color: #f8f4ff;
 }
 
 .navbar-nav {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 28px;
 }
 
 .nav-link {
   position: relative;
   padding: 8px 0;
+  color: rgba(248, 244, 255, 0.84);
   font-size: 0.72rem;
-  font-weight: 950;
-  color: #f7f7f7;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
   transition: color var(--transition);
 }
 
@@ -61,17 +60,17 @@
   content: '';
   position: absolute;
   left: 0;
-  bottom: 2px;
+  bottom: 1px;
   width: 100%;
   height: 2px;
-  background: #ff2b46;
+  background: #a85cff;
   transform: scaleX(0);
   transform-origin: right;
-  transition: transform var(--transition);
+  transition: transform 0.22s ease;
 }
 
 .nav-link:hover {
-  color: #ff2b46;
+  color: #fff;
 }
 
 .nav-link:hover::after {
@@ -89,12 +88,10 @@
 }
 
 .hamburger span {
-  display: block;
   width: 24px;
   height: 2px;
+  border-radius: 999px;
   background: #fff;
-  border-radius: 2px;
-  transition: all 0.3s ease;
 }
 
 .hamburger.active span:nth-child(1) {
@@ -119,34 +116,17 @@
     top: 0;
     right: -100%;
     bottom: 0;
-    width: 260px;
+    width: min(280px, 100%);
     flex-direction: column;
     align-items: flex-start;
-    background: #1e2327;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 80px 24px 24px;
-    gap: 8px;
-    transition: right 0.35s ease;
+    gap: 10px;
+    padding: 84px 18px 24px;
+    background: #120f1e;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    transition: right 0.32s ease;
   }
 
   .navbar-nav.open {
     right: 0;
-  }
-
-  .nav-link {
-    width: 100%;
-    padding: 12px 0;
-    font-size: 0.82rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .navbar-container {
-    padding: 0 16px;
-  }
-
-  .navbar-nav {
-    width: min(280px, 100%);
-    padding: 80px 16px 24px;
   }
 }

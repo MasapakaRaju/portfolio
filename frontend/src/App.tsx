@@ -9,7 +9,6 @@ import Experience from './components/Experience/Experience'
 import Projects from './components/Projects/Projects'
 import Contact from './components/Contact/Contact'
 import Footer from './components/Footer/Footer'
-import CustomCursor from './components/Effects/CustomCursor'
 import ScrollProgress from './components/Effects/ScrollProgress'
 
 export default function App() {
@@ -65,7 +64,6 @@ export default function App() {
   return (
     <>
       <ScrollProgress />
-      <CustomCursor />
       {refreshing && <div className="refresh-pill">Refreshing backend data...</div>}
       <Navbar name={data.personalInfo.name} />
       <main>

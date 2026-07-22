@@ -1,5 +1,5 @@
 section#skills {
-  background: linear-gradient(180deg, rgba(16, 22, 26, 0.9), rgba(11, 15, 18, 0.92));
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .skills-grid {
@@ -9,13 +9,13 @@ section#skills {
 }
 
 .skill-category {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 24px;
-  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
   position: relative;
   overflow: hidden;
+  padding: 24px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(28, 20, 44, 0.92), rgba(18, 12, 28, 0.95));
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
 .skill-category::after {
@@ -30,9 +30,9 @@ section#skills {
 }
 
 .skill-category:hover {
-  border-color: var(--border-hover);
   transform: translateY(-4px);
-  box-shadow: var(--shadow);
+  border-color: rgba(168, 92, 255, 0.28);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
 }
 
 .skill-category:hover::after {
@@ -40,13 +40,13 @@ section#skills {
 }
 
 .category-name {
+  margin-bottom: 18px;
+  color: #c9b2ff;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--accent-amber);
-  margin-bottom: 18px;
-  font-family: var(--font-mono);
 }
 
 .skill-tags {
@@ -63,25 +63,25 @@ section#skills {
 }
 
 .skill-name {
-  font-size: 0.86rem;
   color: var(--text-secondary);
+  font-size: 0.86rem;
   font-weight: 700;
 }
 
 .skill-bar-wrap {
   height: 7px;
-  background: rgba(245, 241, 232, 0.08);
-  border-radius: 999px;
   overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .skill-bar {
-  height: 100%;
   width: var(--proficiency);
-  background: var(--accent-gradient);
+  height: 100%;
   border-radius: 999px;
-  animation: growBar 1s ease forwards;
+  background: var(--accent-gradient);
   transform-origin: left;
+  animation: growBar 1s ease forwards;
 }
 
 @keyframes growBar {
@@ -90,9 +90,9 @@ section#skills {
 }
 
 .skill-percent {
-  font-size: 0.76rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
+  font-size: 0.76rem;
   text-align: right;
 }
 
@@ -111,7 +111,9 @@ section#skills {
     grid-column: 1 / -1;
     grid-row: 2;
   }
-}@media (max-width: 420px) {
+}
+
+@media (max-width: 420px) {
   .skill-category {
     padding: 20px;
   }
