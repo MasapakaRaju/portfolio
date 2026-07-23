@@ -14,18 +14,18 @@ A full-stack developer portfolio with a **Spring Boot REST API** backend, **Reac
 │                                                                     │
 │  ┌───────────┐   ┌───────────┐   ┌──────────┐   ┌──────────────┐  │
 │  │  Frontend  │   │  Backend  │   │ Security │   │   Deploy     │  │
-│  │  Build &   │──▶│  Build &  │──▶│  Scan    │──▶│  GH Pages +  │  │
-│  │  Lint      │   │  Test     │   │  OWASP + │   │  Render      │  │
-│  │           │   │           │   │  Trivy   │   │  + Docker    │  │
+│  │  Validate  │──▶│  Validate │──▶│  Scan    │──▶│  GH Pages +  │  │
+│  │  TS+ESLint │   │  Compile+ │   │  OWASP + │   │  Render      │  │
+│  │  +Tests    │   │  AllTests │   │  Trivy   │   │  + Docker    │  │
 │  └───────────┘   └───────────┘   └──────────┘   └──────────────┘  │
 └─────────────────────────────────────────────────────────────────────┘
          │                                              │
          ▼                                              ▼
    GitHub Pages                                    Render
    (React SPA)                              (Spring Boot API)
-                                                  │
-                                                  ▼
-                                              PostgreSQL
+                                                   │
+                                                   ▼
+                                               PostgreSQL
 ```
 
 | Layer | Technology | Deployment |
@@ -44,11 +44,11 @@ A full-stack developer portfolio with a **Spring Boot REST API** backend, **Reac
 - **Contact form with Slack notifications** — Validated form submissions trigger real-time Slack Block Kit messages with full contact details
 - **Country code selector** — 29 countries with default India (+91), combined on submit as `+CODE NUMBER`
 - **Client-side caching** — Portfolio data cached in localStorage; stale-while-revalidate pattern loads instantly then refreshes silently
-- **Retry with backoff** — Frontend retries failed API calls up to 4 times with exponential backoff (30s timeout)
+- **Retry with backoff** — Frontend retries failed API calls up to 6 times with exponential backoff (3s×attempt, ~63s total to survive Render cold starts)
 - **Scroll progress indicator** — Visual progress bar at the top of the page
 - **Responsive design** — Mobile-first layout with hamburger nav, smooth scroll navigation
 - **Security scanning** — OWASP Dependency Check and Trivy vulnerability scanning in CI
-- **53 backend unit tests** — Controller slice tests, service mock tests, exception handler tests
+- **55 backend unit & integration tests** — Controller slice tests, service mock tests, exception handler tests, and a full Spring Boot integration test that validates DB schema against a real database
 
 ---
 
@@ -100,7 +100,7 @@ my-portfolio/
 │   │   ├── model/            # JPA entities
 │   │   ├── repository/       # Spring Data repositories
 │   │   └── service/          # Business logic (Contact, Portfolio, Slack)
-│   ├── src/test/java/        # 53 unit & integration tests
+│   ├── src/test/java/        # 55 unit & integration tests
 │   ├── Dockerfile            # Multi-stage Maven build
 │   └── pom.xml
 ├── frontend/
@@ -237,7 +237,7 @@ The Vite dev server proxies `/api` requests to `http://localhost:8080`.
 
 ## Testing
 
-### Backend (53 tests)
+### Backend (55 tests)
 
 ```bash
 cd backend
@@ -253,6 +253,7 @@ mvn test
 | `ContactServiceTest` | 4 | Mockito — DB persistence, Slack notification, error resilience |
 | `PortfolioServiceTest` | 8 | Mockito — data aggregation, empty repos, ordering |
 | `SlackServiceTest` | 10 | Unit — webhook config, JSON escaping, payload structure |
+| `DataSeederIntegrationTest` | 2 | `@SpringBootTest` — full context boot + DB schema validation via DataSeeder |
 
 ### Frontend (12 tests)
 
@@ -272,29 +273,43 @@ npm test
 The GitHub Actions workflow (`ci-cd-pipeline.yml`) runs on every push/PR to `master`, `main`, or `develop`:
 
 ```
-frontend-build ──┬──▶ frontend-lint ──┐
-                 │                    │
-backend-build ──┬┘                   ├─▶ security-scan ──▶ docker-build
-                 └──▶ backend-test ──┘         │              │
-                                              │              ▼
-                                              │        deploy-render
-                                              │              │
-                                              │              ▼
-                                              │     deploy-to-github-pages
-                                              │              │
-                                              └──────────────┘
-                                                         │
-                                                    notify (Slack)
+frontend-validate ──┐
+                    ├─▶ security-scan ──▶ docker-build
+backend-validate ──┘         │                  │
+                            │                  ▼
+                            │           deploy-render
+                            │                  │
+                            │                  ▼
+                            │      deploy-to-github-pages
+                            │                  │
+                            └──────────────────┘
+                                       │
+                                  notify (Slack)
 ```
 
-1. **Frontend Build** — `npm ci && npm run build`
-2. **Frontend Lint** — TypeScript type checking + ESLint
-3. **Backend Build** — `mvn clean package -DskipTests`
-4. **Backend Test** — `mvn test` against a PostgreSQL 16 service container
-5. **Security Scan** — OWASP Dependency Check + Trivy filesystem scan + npm audit
-6. **Docker Build** — Multi-stage images pushed to GitHub Container Registry
-7. **Deploy** — Render (backend) + GitHub Pages (frontend)
-8. **Notify** — Slack notification with pipeline status and action buttons
+### Frontend Validate
+1. **Type check** — `tsc --noEmit` catches type errors
+2. **ESLint** — enforces code quality rules (no warnings allowed)
+3. **Unit tests** — `vitest run` runs all 12 frontend tests
+4. **Build** — `npm run build` produces production bundle
+5. **Build verification** — confirms `dist/index.html` exists
+
+### Backend Validate
+1. **Compile check** — `mvn compile` catches compilation errors early
+2. **All tests** — `mvn test` runs 55 tests against a PostgreSQL 16 service container, including `DataSeederIntegrationTest` which validates DB schema (entity column lengths vs actual data)
+3. **JAR verification** — `mvn package -DskipTests` confirms the final artifact builds
+4. **Upload artifacts** — test results and JAR for downstream jobs
+
+### Security Scan
+- **OWASP Dependency Check** — scans backend dependencies for known CVEs
+- **Trivy** — filesystem vulnerability scanner, results uploaded to GitHub Security tab
+- **npm audit** — scans frontend dependencies
+
+### Deploy
+- **Docker Build** — multi-stage backend image pushed to GHCR
+- **Render** — backend deployed via deploy hook + 5-minute wait for cold start
+- **GitHub Pages** — frontend built with `VITE_API_URL` baked in and deployed
+- **Notify** — Slack message with status and action buttons
 
 ---
 

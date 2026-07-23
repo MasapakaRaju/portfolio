@@ -31,7 +31,7 @@ public class Experience {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "experience_highlights", joinColumns = @JoinColumn(name = "experience_id"))
-    @Column(name = "highlight")
+    @Column(name = "highlight", columnDefinition = "TEXT")
     private List<String> highlights = new ArrayList<>();
 
     private Integer displayOrder;
