@@ -71,9 +71,9 @@ export async function submitContact(data: ContactForm): Promise<{ message: strin
     body: JSON.stringify(data),
   });
 
-  let body: Record<string, unknown> = {};
+  let body: Record<string, unknown>;
   try {
-    body = await res.json();
+    body = (await res.json()) as Record<string, unknown>;
   } catch {
     throw new Error('Backend is unavailable. Please try again later.');
   }
