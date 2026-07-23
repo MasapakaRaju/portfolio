@@ -326,63 +326,81 @@ jobs:
             echo "failed_job=$FAILED_JOB" >> $GITHUB_OUTPUT
           fi
 
+      - name: Build Slack payload
+        id: payload
+        if: always()
+        run: |
+          if [ "${{ steps.check.outputs.outcome }}" = "success" ]; then
+            PAYLOAD=$(cat <<'EOF'
+          {
+            "text": "Portfolio Pipeline SUCCEEDED",
+            "blocks": [
+              {
+                "type": "header",
+                "text": { "type": "plain_text", "text": "Portfolio Deployed Successfully" }
+              },
+              {
+                "type": "section",
+                "text": { "type": "mrkdwn", "text": "*All stages passed.*\nYour portfolio is live and updated." }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": { "type": "plain_text", "text": "View Portfolio" },
+                    "url": "https://masapakaraju.github.io/portfolio/",
+                    "style": "primary"
+                  },
+                  {
+                    "type": "button",
+                    "text": { "type": "plain_text", "text": "View Workflow" },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          else
+            PAYLOAD=$(cat <<EOF
+          {
+            "text": "Portfolio Pipeline FAILED",
+            "blocks": [
+              {
+                "type": "header",
+                "text": { "type": "plain_text", "text": "Pipeline Failed" }
+              },
+              {
+                "type": "section",
+                "text": { "type": "mrkdwn", "text": "*Failed Stage:* \`${{ steps.check.outputs.failed_job }}\`\n*Author:* ${{ github.actor }}\n*Branch:* ${{ github.ref }}" }
+              },
+              {
+                "type": "actions",
+                "elements": [
+                  {
+                    "type": "button",
+                    "text": { "type": "plain_text", "text": "View Logs" },
+                    "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                    "style": "danger"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          fi
+          echo "payload<<PAYLOAD_EOF" >> "$GITHUB_OUTPUT"
+          echo "$PAYLOAD" >> "$GITHUB_OUTPUT"
+          echo "PAYLOAD_EOF" >> "$GITHUB_OUTPUT"
+
       - name: Send Slack notification
         uses: slackapi/slack-github-action@v1.24.0
         if: always()
         with:
-          payload: |
-            ${{ steps.check.outputs.outcome == 'success' && format('{
-              "text": "Portfolio Pipeline SUCCEEDED",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": { "type": "plain_text", "text": "Portfolio Deployed Successfully" }
-                },
-                {
-                  "type": "section",
-                  "text": { "type": "mrkdwn", "text": "*All stages passed.*\nYour portfolio is live and updated." }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "View Portfolio" },
-                      "url": "https://masapakaraju.github.io/portfolio/",
-                      "style": "primary"
-                    },
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "View Workflow" },
-                      "url": "{0}/{1}/actions/runs/{2}"
-                    }
-                  ]
-                }
-              ]
-            }', github.server_url, github.repository, github.run_id) || format('{
-              "text": "Portfolio Pipeline FAILED",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": { "type": "plain_text", "text": "Pipeline Failed" }
-                },
-                {
-                  "type": "section",
-                  "text": { "type": "mrkdwn", "text": "*Failed Stage:* `{0}`\n*Author:* {1}\n*Branch:* {2}" }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "View Logs" },
-                      "url": "{3}/{4}/actions/runs/{5}",
-                      "style": "danger"
-                    }
-                  ]
-                }
-              ]
-            }', steps.check.outputs.failed_job, github.actor, github.ref, github.server_url, github.repository, github.run_id) }}
+          payload: ${{ steps.payload.outputs.payload }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
