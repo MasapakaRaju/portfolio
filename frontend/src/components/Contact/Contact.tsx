@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ContactForm, PersonalInfo } from '../../types'
-import { submitContact, verifyContact } from '../../api/portfolio'
+import { submitContact } from '../../api/portfolio'
 import './Contact.css'
 
 interface ContactProps {
@@ -9,16 +9,47 @@ interface ContactProps {
 
 const initialForm: ContactForm = { name: '', email: '', phone: '', subject: '', message: '' }
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const phonePattern = /^\+?[1-9]\d{7,14}$/
+const phonePattern = /^\d{7,15}$/
+
+const COUNTRY_CODES = [
+  { code: '+91', label: 'IN', name: 'India' },
+  { code: '+1', label: 'US', name: 'United States' },
+  { code: '+44', label: 'GB', name: 'United Kingdom' },
+  { code: '+61', label: 'AU', name: 'Australia' },
+  { code: '+1', label: 'CA', name: 'Canada' },
+  { code: '+49', label: 'DE', name: 'Germany' },
+  { code: '+33', label: 'FR', name: 'France' },
+  { code: '+81', label: 'JP', name: 'Japan' },
+  { code: '+86', label: 'CN', name: 'China' },
+  { code: '+55', label: 'BR', name: 'Brazil' },
+  { code: '+7', label: 'RU', name: 'Russia' },
+  { code: '+82', label: 'KR', name: 'South Korea' },
+  { code: '+971', label: 'AE', name: 'UAE' },
+  { code: '+966', label: 'SA', name: 'Saudi Arabia' },
+  { code: '+65', label: 'SG', name: 'Singapore' },
+  { code: '+60', label: 'MY', name: 'Malaysia' },
+  { code: '+63', label: 'PH', name: 'Philippines' },
+  { code: '+62', label: 'ID', name: 'Indonesia' },
+  { code: '+66', label: 'TH', name: 'Thailand' },
+  { code: '+234', label: 'NG', name: 'Nigeria' },
+  { code: '+27', label: 'ZA', name: 'South Africa' },
+  { code: '+353', label: 'IE', name: 'Ireland' },
+  { code: '+31', label: 'NL', name: 'Netherlands' },
+  { code: '+46', label: 'SE', name: 'Sweden' },
+  { code: '+47', label: 'NO', name: 'Norway' },
+  { code: '+48', label: 'PL', name: 'Poland' },
+  { code: '+39', label: 'IT', name: 'Italy' },
+  { code: '+34', label: 'ES', name: 'Spain' },
+  { code: '+64', label: 'NZ', name: 'New Zealand' },
+]
 
 export default function Contact({ personalInfo }: ContactProps) {
   const ref = useRef<HTMLElement>(null)
   const [form, setForm] = useState<ContactForm>(initialForm)
+  const [countryCode, setCountryCode] = useState('+91')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [statusMsg, setStatusMsg] = useState('')
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ContactForm, string>>>({})
-  const [verificationPending, setVerificationPending] = useState(false)
-  const [verificationCode, setVerificationCode] = useState('')
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -33,23 +64,21 @@ export default function Contact({ personalInfo }: ContactProps) {
     const field = e.target.name as keyof ContactForm
     setForm(f => ({ ...f, [field]: e.target.value }))
     setFormErrors(errors => ({ ...errors, [field]: undefined }))
-    if (verificationPending) {
-      setVerificationPending(false)
-      setVerificationCode('')
-      setStatus('idle')
-      setStatusMsg('')
-    }
+  }
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountryCode(e.target.value)
   }
 
   const validateForm = () => {
     const errors: Partial<Record<keyof ContactForm, string>> = {}
-    const phone = form.phone.replace(/[\s()-]/g, '')
 
-    ;(['name', 'email', 'phone', 'subject', 'message'] as const).forEach(field => {
+    ;(['name', 'email', 'subject', 'message'] as const).forEach(field => {
       if (!form[field].trim()) errors[field] = 'This field is required'
     })
+    if (!form.phone.trim()) errors.phone = 'This field is required'
     if (form.email && !emailPattern.test(form.email.trim())) errors.email = 'Enter a valid email address'
-    if (form.phone && !phonePattern.test(phone)) errors.phone = 'Enter a valid mobile number'
+    if (form.phone && !phonePattern.test(form.phone.replace(/[\s()-]/g, ''))) errors.phone = 'Enter a valid mobile number'
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
@@ -63,10 +92,12 @@ export default function Contact({ personalInfo }: ContactProps) {
       return
     }
 
+    const fullPhone = `${countryCode}${form.phone.replace(/[\s()-]/g, '')}`
+
     const contactData = {
       name: form.name.trim(),
       email: form.email.trim().toLowerCase(),
-      phone: form.phone.replace(/[\s()-]/g, ''),
+      phone: fullPhone,
       subject: form.subject.trim(),
       message: form.message.trim(),
     }
@@ -76,32 +107,11 @@ export default function Contact({ personalInfo }: ContactProps) {
       const res = await submitContact(contactData)
       setStatus('success')
       setStatusMsg(res.message)
-      setForm(contactData)
-      setVerificationPending(true)
+      setForm(initialForm)
+      setCountryCode('+91')
     } catch (err) {
       setStatus('error')
       setStatusMsg(err instanceof Error ? err.message : 'Something went wrong.')
-    }
-  }
-
-  const handleVerification = async () => {
-    if (!/^\d{6}$/.test(verificationCode)) {
-      setStatus('error')
-      setStatusMsg('Enter the six-digit verification code from your email.')
-      return
-    }
-
-    setStatus('loading')
-    try {
-      const res = await verifyContact(form.email, verificationCode)
-      setStatus('success')
-      setStatusMsg(res.message)
-      setForm(initialForm)
-      setVerificationCode('')
-      setVerificationPending(false)
-    } catch (err) {
-      setStatus('error')
-      setStatusMsg(err instanceof Error ? err.message : 'Unable to verify your email.')
     }
   }
 
@@ -192,13 +202,27 @@ export default function Contact({ personalInfo }: ContactProps) {
               </div>
             </div>
             <div className="form-row">
-              <div className="form-group">
+              <div className="form-group phone-group">
                 <label htmlFor="phone">Mobile Number</label>
-                <input
-                  id="phone" name="phone" type="tel" inputMode="tel" placeholder="+91 98765 43210"
-                  value={form.phone} onChange={handleChange} required
-                  aria-invalid={Boolean(formErrors.phone)} aria-describedby={formErrors.phone ? 'phone-error' : undefined}
-                />
+                <div className="phone-input-wrap">
+                  <select
+                    className="country-code-select"
+                    value={countryCode}
+                    onChange={handleCountryChange}
+                    aria-label="Country code"
+                  >
+                    {COUNTRY_CODES.map(c => (
+                      <option key={`${c.code}-${c.label}`} value={c.code}>
+                        {c.label} {c.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    id="phone" name="phone" type="tel" inputMode="numeric" placeholder="98765 43210"
+                    value={form.phone} onChange={handleChange} required
+                    aria-invalid={Boolean(formErrors.phone)} aria-describedby={formErrors.phone ? 'phone-error' : undefined}
+                  />
+                </div>
                 {formErrors.phone && <span className="form-error" id="phone-error">{formErrors.phone}</span>}
               </div>
               <div className="form-group">
@@ -227,25 +251,9 @@ export default function Contact({ personalInfo }: ContactProps) {
               </div>
             )}
 
-            {verificationPending ? (
-              <div className="verification-panel">
-                <label htmlFor="verification-code">Email Verification Code</label>
-                <div className="verification-actions">
-                  <input
-                    id="verification-code" type="text" inputMode="numeric" autoComplete="one-time-code"
-                    maxLength={6} placeholder="000000" value={verificationCode}
-                    onChange={event => setVerificationCode(event.target.value.replace(/\D/g, ''))}
-                  />
-                  <button type="button" className="btn btn-primary" onClick={handleVerification} disabled={status === 'loading'}>
-                    {status === 'loading' ? 'Verifying...' : 'Verify & Send'}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button type="submit" className="btn btn-primary submit-btn" disabled={status === 'loading'}>
-                {status === 'loading' ? 'Sending...' : 'Send Message'}
-              </button>
-            )}
+            <button type="submit" className="btn btn-primary submit-btn" disabled={status === 'loading'}>
+              {status === 'loading' ? 'Sending...' : 'Send Message'}
+            </button>
           </form>
         </div>
       </div>

@@ -1,6 +1,5 @@
 package com.portfolio.config;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,9 +24,8 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, String>> handleEmailUnavailable(IllegalStateException exception) {
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body(Map.of("message", "Email delivery is temporarily unavailable. Please try again later."));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGeneral(Exception exception) {
+        return ResponseEntity.internalServerError().body(Map.of("message", "Something went wrong. Please try again later."));
     }
 }

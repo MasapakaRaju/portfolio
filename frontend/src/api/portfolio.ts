@@ -72,16 +72,3 @@ export async function submitContact(data: ContactForm): Promise<{ message: strin
   }
   return res.json();
 }
-
-export async function verifyContact(email: string, code: string): Promise<{ message: string }> {
-  const res = await fetch(`${BASE_URL}/contact/verify`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, code }),
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || 'Unable to verify your email');
-  }
-  return res.json();
-}

@@ -189,10 +189,10 @@ public class DataSeeder implements CommandLineRunner {
         p4.setName("Portfolio");
         p4.setDescription(
             "Full-stack portfolio platform powered by a Spring Boot REST API, React + TypeScript frontend, " +
-            "PostgreSQL persistence, Docker builds, Render backend deployment, and Netlify frontend delivery."
+            "PostgreSQL persistence, Docker builds Image and containerize in GHCR, Render backend deployment, and Github pages for  frontend delivery."
         );
-        p4.setTechStack("Spring Boot,React,TypeScript,PostgreSQL,Docker,Render,Netlify");
-        p4.setGithubUrl("https://github.com/MasapakaRaju/my-portfolio");
+        p4.setTechStack("Spring Boot,React,TypeScript,PostgreSQL,Docker,Render,Github Pages");
+        p4.setGithubUrl("https://github.com/MasapakaRaju/portfolio");
         p4.setDemoUrl("#");
         p4.setIsFeatured(true);
         p4.setDisplayOrder(4);

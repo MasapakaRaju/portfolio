@@ -1,8 +1,6 @@
 package com.portfolio.controller;
 
 import com.portfolio.dto.ContactRequest;
-import com.portfolio.dto.VerifyContactRequest;
-import com.portfolio.model.ContactMessage;
 import com.portfolio.service.ContactService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +21,7 @@ public class ContactController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> sendMessage(@Valid @RequestBody ContactRequest request) {
-        contactService.requestVerification(request);
-        return ResponseEntity.ok(Map.of("message", "We sent a verification code to your email. Enter it below to send your message."));
-    }
-
-    @PostMapping("/verify")
-    public ResponseEntity<Map<String, String>> verifyAndSend(@Valid @RequestBody VerifyContactRequest request) {
-        contactService.verifyAndSave(request);
-        return ResponseEntity.ok(Map.of("message", "Your message has been sent. I'll get back to you soon!"));
+        contactService.saveAndNotify(request);
+        return ResponseEntity.ok(Map.of("message", "Your message has been sent successfully. I'll get back to you soon!"));
     }
 }
