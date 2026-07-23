@@ -29,10 +29,10 @@ public class Experience {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "experience_highlights", joinColumns = @JoinColumn(name = "experience_id"))
-    @Column(name = "highlight", columnDefinition = "TEXT")
-    private List<String> highlights = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "experience_highlights")
+    @Column(columnDefinition = "TEXT")
+    private List<String> highlights;
 
     private Integer displayOrder;
 }
