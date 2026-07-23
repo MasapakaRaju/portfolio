@@ -113,15 +113,15 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedExperience() {
-        Experience exp1 = new Experience();
-        exp1.setCompany("OpenText");
-        exp1.setRole("Associate Engineer");
-        exp1.setLocation("Bangalore, India");
-        exp1.setStartDate("Aug 2025");
-        exp1.setEndDate("Mar 2026");
-        exp1.setIsCurrent(false);
-        exp1.setDescription("Owned backend API and microservice delivery across design, coding, testing, deployment, optimization, and production readiness.");
-        exp1.setHighlights(Arrays.asList(
+        Experience exp2 = new Experience();
+        exp2.setCompany("OpenText");
+        exp2.setRole("Associate Engineer");
+        exp2.setLocation("Bangalore, India");
+        exp2.setStartDate("Aug 2025");
+        exp2.setEndDate("Mar 2026");
+        exp2.setIsCurrent(false);
+        exp2.setDescription("Owned backend API and microservice delivery across design, coding, testing, deployment, optimization, and production readiness.");
+        exp2.setHighlights(Arrays.asList(
             "Owned the full development lifecycle for 12+ scalable RESTful APIs and microservices using Java and Spring Boot",
             "Integrated Claude Code, GitHub Copilot, and ChatGPT into planning, technical design, code generation, testing, and code/security review workflows",
             "Built backend infrastructure for high-volume data processing and request workflows using multithreading and event-driven patterns",
@@ -129,72 +129,72 @@ public class DataSeeder implements CommandLineRunner {
             "Optimized 20+ SQL queries and backend workflows to reduce API response latency across high-throughput services",
             "Supported Docker and Kubernetes cloud-native deployments with CI/CD pipelines for high-availability backend infrastructure"
         ));
-        exp1.setDisplayOrder(1);
+        exp2.setDisplayOrder(1);
 
-        Experience exp2 = new Experience();
-        exp2.setCompany("OpenText");
-        exp2.setRole("Engineering Intern");
-        exp2.setLocation("Bangalore, India");
-        exp2.setStartDate("Mar 2025");
-        exp2.setEndDate("Aug 2025");
-        exp2.setIsCurrent(false);
-        exp2.setDescription("Automated internal workflows and improved UI testing reliability for engineering teams.");
-        exp2.setHighlights(Arrays.asList(
+        Experience exp3 = new Experience();
+        exp3.setCompany("OpenText");
+        exp3.setRole("Engineering Intern");
+        exp3.setLocation("Bangalore, India");
+        exp3.setStartDate("Mar 2025");
+        exp3.setEndDate("Aug 2025");
+        exp3.setIsCurrent(false);
+        exp3.setDescription("Automated internal workflows and improved UI testing reliability for engineering teams.");
+        exp3.setHighlights(Arrays.asList(
             "Automated 10+ internal operational workflows end-to-end, reducing repetitive manual effort using Java backend services",
             "Streamlined UI testing pipelines using Playwright, improving execution consistency and reducing testing time by 30%"
         ));
-        exp2.setDisplayOrder(2);
+        exp3.setDisplayOrder(2);
 
-        experienceRepository.saveAll(Arrays.asList(exp1, exp2));
+        experienceRepository.saveAll(Arrays.asList(exp2, exp3));
     }
 
     private void seedProjects() {
         Project p1 = new Project();
-        p1.setName("REST API Filtering Engine");
+        p1.setName("Portfolio");
         p1.setDescription(
-            "Designed a dynamic filtering and pagination backend service for 10K+ structured records, " +
-            "focused on scalable request handling, optimized SQL queries, and high-throughput API performance."
+                "Full-stack portfolio platform powered by a Spring Boot REST API, React + TypeScript frontend, " +
+                        "PostgreSQL persistence, Docker builds Image and containerize in GHCR, Render backend deployment, and Github pages for  frontend delivery."
         );
-        p1.setTechStack("Spring Boot,Java,REST APIs,SQL Optimization,Pagination,Backend Performance");
-        p1.setGithubUrl("https://github.com/MasapakaRaju");
-        p1.setDemoUrl("#");
+        p1.setTechStack("Spring Boot,React,TypeScript,PostgreSQL,Docker,Render,Github Pages");
+        p1.setGithubUrl("https://github.com/MasapakaRaju/portfolio");
+        p1.setDemoUrl("https://masapakaraju.github.io/portfolio/");
         p1.setIsFeatured(true);
         p1.setDisplayOrder(1);
 
         Project p2 = new Project();
-        p2.setName("Task Management Web Application");
+        p2.setName("REST API Filtering Engine");
         p2.setDescription(
-            "Built a full-stack task management platform with authentication, CRUD operations, " +
-            "and RESTful API integration designed for 50+ simulated users."
+            "Designed a dynamic filtering and pagination backend service for 10K+ structured records, " +
+            "focused on scalable request handling, optimized SQL queries, and high-throughput API performance."
         );
-        p2.setTechStack("MongoDB,Express,React,Node.js,REST APIs,Authentication,CRUD");
+        p2.setTechStack("Spring Boot,Java,REST APIs,SQL Optimization,Pagination,Backend Performance");
         p2.setGithubUrl("https://github.com/MasapakaRaju");
         p2.setDemoUrl("#");
         p2.setIsFeatured(true);
         p2.setDisplayOrder(2);
 
         Project p3 = new Project();
-        p3.setName("Flappy Bird Game Development");
+        p3.setName("Task Management Web Application");
         p3.setDescription(
-            "Built an interactive desktop game using Java AWT and Swing, applying event-driven architecture, " +
-            "real-time processing, collision logic, and responsive keyboard controls."
+            "Built a full-stack task management platform with authentication, CRUD operations, " +
+            "and RESTful API integration designed for 50+ simulated users."
         );
-        p3.setTechStack("Java,AWT,Swing,Event-Driven Architecture,Real-Time Processing");
+        p3.setTechStack("MongoDB,Express,React,Node.js,REST APIs,Authentication,CRUD");
         p3.setGithubUrl("https://github.com/MasapakaRaju");
         p3.setDemoUrl("#");
-        p3.setIsFeatured(false);
+        p3.setIsFeatured(true);
         p3.setDisplayOrder(3);
 
         Project p4 = new Project();
-        p4.setName("Portfolio");
+        p4.setName("Flappy Bird Game Development");
         p4.setDescription(
-            "Full-stack portfolio platform powered by a Spring Boot REST API, React + TypeScript frontend, " +
-            "PostgreSQL persistence, Docker builds Image and containerize in GHCR, Render backend deployment, and Github pages for  frontend delivery."
+            "Built an interactive desktop game using Java AWT and Swing, applying event-driven architecture, " +
+            "real-time processing, collision logic, and responsive keyboard controls."
         );
-        p4.setTechStack("Spring Boot,React,TypeScript,PostgreSQL,Docker,Render,Github Pages");
-        p4.setGithubUrl("https://github.com/MasapakaRaju/portfolio");
+        p4.setTechStack("Java,AWT,Swing,Event-Driven Architecture,Real-Time Processing");
+        p4.setGithubUrl("https://github.com/MasapakaRaju");
         p4.setDemoUrl("#");
-        p4.setIsFeatured(true);
+        p4.setIsFeatured(false);
         p4.setDisplayOrder(4);
 
         projectRepository.saveAll(Arrays.asList(p1, p2, p3, p4));
