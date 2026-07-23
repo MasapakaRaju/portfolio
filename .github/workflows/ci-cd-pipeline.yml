@@ -348,7 +348,7 @@ jobs:
                     {
                       "type": "button",
                       "text": { "type": "plain_text", "text": "View Portfolio" },
-                      "url": "https://masapakaraju.github.io/my-portfolio/",
+                      "url": "https://masapakaraju.github.io/portfolio/",
                       "style": "primary"
                     },
                     {
