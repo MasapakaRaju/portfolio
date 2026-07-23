@@ -178,4 +178,16 @@ section#experience {
   .timeline-card {
     padding: 22px;
   }
+
+  .exp-role {
+    font-size: 1rem;
+  }
+
+  .exp-desc {
+    font-size: 0.88rem;
+  }
+
+  .exp-highlights li {
+    font-size: 0.84rem;
+  }
 }

@@ -33,6 +33,7 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 body {
@@ -44,6 +45,8 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  min-width: 0;
+  max-width: 100vw;
 }
 
 a {
@@ -266,5 +269,28 @@ section {
 
   .container {
     padding: 0 14px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 380px) {
+  section {
+    padding: 48px 0;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
   }
 }

@@ -224,10 +224,32 @@
   }
 
   .about-text p {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .stat-card {
     padding: 22px 16px;
+  }
+
+  .stat-value {
+    font-size: 1.6rem;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+  }
+
+  .meta-value {
+    font-size: 0.85rem;
+    word-break: break-all;
+  }
+
+  .about-cta {
+    flex-direction: column;
+  }
+
+  .about-cta .btn {
+    width: 100%;
+    text-align: center;
   }
 }

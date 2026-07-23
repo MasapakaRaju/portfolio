@@ -230,7 +230,7 @@ jobs:
       - name: Wait 5 minutes for Render to deploy
         run: |
           echo "Waiting 300 seconds for Render backend to fully deploy..."
-          sleep 300
+          sleep 100
           echo "Wait complete."
 
   deploy-to-github-pages:

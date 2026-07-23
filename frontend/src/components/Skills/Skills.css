@@ -104,12 +104,16 @@ section#skills {
 
 @media (max-width: 520px) {
   .skill-tag {
-    grid-template-columns: 1fr 40px;
+    grid-template-columns: 1fr auto;
   }
 
   .skill-bar-wrap {
     grid-column: 1 / -1;
     grid-row: 2;
+  }
+
+  .skill-name {
+    font-size: 0.8rem;
   }
 }
 
@@ -123,6 +127,10 @@ section#skills {
   }
 
   .skill-percent {
+    font-size: 0.72rem;
+  }
+
+  .category-name {
     font-size: 0.72rem;
   }
 }

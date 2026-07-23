@@ -44,7 +44,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: 42px;
   align-items: center;
 }
@@ -71,15 +71,18 @@
 .hero-name {
   display: grid;
   gap: 0;
-  width: min-content;
+  width: 100%;
+  max-width: min-content;
   margin-bottom: 24px;
   color: #f7f2ff;
-  font-size: clamp(3rem, 10.4vw, 6.8rem);
+  font-size: clamp(2.5rem, 10.4vw, 6.8rem);
   font-weight: 800;
   line-height: 0.86;
   text-transform: uppercase;
   letter-spacing: 0;
   text-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .hero-name span {
@@ -139,6 +142,7 @@
 .hero-visual {
   position: relative;
   min-height: 620px;
+  overflow: hidden;
   animation: visualRise 0.9s ease 0.12s both;
 }
 
@@ -256,7 +260,7 @@
   }
 
   .hero-photo-frame {
-    min-height: 460px;
+    min-height: 400px;
   }
 
   .hero-metrics {
@@ -275,16 +279,22 @@
 
 @media (max-width: 640px) {
   .hero {
-    padding-top: 96px;
+    padding-top: 80px;
   }
 
   .hero-name {
     width: 100%;
-    font-size: clamp(2.8rem, 16vw, 4.4rem);
+    max-width: 100%;
+    font-size: clamp(2.2rem, 14vw, 3.6rem);
   }
 
   .hero-name span {
     white-space: normal;
+  }
+
+  .hero-tagline {
+    font-size: 0.92rem;
+    line-height: 1.7;
   }
 
   .hero-actions {
@@ -292,21 +302,48 @@
     align-items: stretch;
   }
 
+  .hero-actions .btn {
+    width: 100%;
+  }
+
   .hero-socials {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-photo-frame {
+    min-height: 320px;
+    border-radius: 22px;
+  }
+
+  .hero-orbit-one,
+  .hero-orbit-two {
+    display: none;
   }
 
   .hero-metrics {
     grid-template-columns: 1fr;
   }
 
-  .hero-photo-frame {
-    min-height: 410px;
-    border-radius: 22px;
-  }
-
   .scroll-down {
     display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero {
+    padding-top: 72px;
+  }
+
+  .hero-name {
+    font-size: clamp(1.8rem, 13vw, 3rem);
+  }
+
+  .hero-photo-frame {
+    min-height: 260px;
+  }
+
+  .hero-socials {
+    grid-template-columns: 1fr;
   }
 }

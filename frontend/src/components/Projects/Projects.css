@@ -143,4 +143,12 @@
     align-items: flex-start;
     gap: 12px;
   }
+
+  .project-name {
+    font-size: 1.05rem;
+  }
+
+  .project-desc {
+    font-size: 0.85rem;
+  }
 }
