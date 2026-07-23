@@ -140,8 +140,8 @@ public class DataSeeder implements CommandLineRunner {
         exp2.setHighlights(Arrays.asList("Architected 12+ enterprise-grade microservices using Java 17 and Spring Boot, ensuring high availability and reliability for distributed data management platforms.",
                 "Implemented AI-native engineering workflows using GitHub Copilot and Claude to automate unit test generation and refactor legacy code, increasing sprint velocity by 25%.",
                 "Optimized P99 API response latency by 35% through SQL query refactoring and Redis caching, handling highconcurrency workloads in production environments.",
-                "Spearheaded security remediation for 15+ critical vulnerabilities identified via Black Duck, ensuring 100% compliance with SOC2 and enterprise security standards."
-                "Orchestrated containerized deployments via Docker and Kubernetes, maintaining CI/CD pipeline health and reducing deployment preparation time by 30%."
+                "Spearheaded security remediation for 15+ critical vulnerabilities identified via Black Duck, ensuring 100% compliance with SOC2 and enterprise security standards.",
+                "Orchestrated containerized deployments via Docker and Kubernetes, maintaining CI/CD pipeline health and reducing deployment preparation time by 30%.",
                 "Leveraged Claude Code and GitHub Copilot as core AI-native development tools — rapidly experimenting with agentic workflows to deliver results faster and more effectively."
         ));
         exp2.setDisplayOrder(1);
