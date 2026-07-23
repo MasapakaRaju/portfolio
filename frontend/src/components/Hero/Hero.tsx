@@ -48,7 +48,7 @@ export default function Hero({ personalInfo }: HeroProps) {
         <div className="hero-visual" aria-label="Masapaka Raju portrait">
           <div className="hero-photo-frame">
             <div className="hero-photo-glow" aria-hidden="true" />
-            <img src="/MasapakaRajuHero.png" alt="Masapaka Raju" className="hero-photo" />
+            <img src={`${import.meta.env.BASE_URL}MasapakaRajuHero.png`} alt="Masapaka Raju" className="hero-photo" />
           </div>
           <div className="hero-metrics">
             {metrics.map(metric => (
