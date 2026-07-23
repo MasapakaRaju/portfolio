@@ -41,37 +41,6 @@ export default function About({ personalInfo }: AboutProps) {
 
           <div className="about-text fade-in">
             <p>{personalInfo.about}</p>
-
-            <div className="about-meta">
-              <div className="meta-item">
-                <span className="meta-label">Location</span>
-                <span className="meta-value">{personalInfo.location}</span>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">Email</span>
-                <a href={`mailto:${personalInfo.email}`} className="meta-value meta-link">
-                  {personalInfo.email}
-                </a>
-              </div>
-              <div className="meta-item">
-                <span className="meta-label">Phone</span>
-                <a href={`tel:${personalInfo.phone}`} className="meta-value meta-link">
-                  {personalInfo.phone}
-                </a>
-              </div>
-            </div>
-
-            <div className="about-cta">
-              <a href={personalInfo.githubUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-                GitHub Profile
-              </a>
-              <a href={personalInfo.linkedinUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-                LinkedIn Profile
-              </a>
-              <a href={personalInfo.leetcodeUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-                LeetCode Profile
-              </a>
-            </div>
           </div>
         </div>
 
