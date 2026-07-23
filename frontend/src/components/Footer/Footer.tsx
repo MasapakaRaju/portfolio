@@ -11,12 +11,6 @@ export default function Footer({ personalInfo }: FooterProps) {
   return (
     <footer className="footer">
       <div className="container footer-inner">
-        <a href="#hero" className="footer-logo">
-          <span className="logo-bracket">&lt;</span>
-          {personalInfo.name.split(' ')[0]}
-          <span className="logo-bracket">/&gt;</span>
-        </a>
-
         <p className="footer-copy">
           &copy; {year} {personalInfo.name}. Built with Spring Boot & React.
         </p>

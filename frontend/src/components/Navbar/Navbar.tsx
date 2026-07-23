@@ -10,7 +10,7 @@ const navLinks = [
   { label: 'Stack', href: '#skills' },
   { label: 'Experience', href: '#experience' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Contacts', href: '#contact' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 export default function Navbar({ name }: NavbarProps) {
