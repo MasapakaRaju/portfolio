@@ -18,8 +18,11 @@ export default function Navbar({ name }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', onScroll)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50)
+      setMenuOpen(false)
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -37,6 +40,8 @@ export default function Navbar({ name }: NavbarProps) {
 
   return (
     <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      {menuOpen && <div className="nav-backdrop" onClick={() => setMenuOpen(false)} />}
+
       <div className="navbar-container">
         <a href="#hero" className="navbar-logo" onClick={(e) => handleLinkClick(e, '#hero')}>
           <span>{name}</span>
