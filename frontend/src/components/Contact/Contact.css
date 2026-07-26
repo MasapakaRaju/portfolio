@@ -1,5 +1,6 @@
 section#contact {
   background: var(--bg-secondary);
+  overflow: hidden;
 }
 
 .contact-grid {
@@ -7,6 +8,7 @@ section#contact {
   grid-template-columns: 1fr 1.4fr;
   gap: 60px;
   align-items: start;
+  min-width: 0;
 }
 
 .contact-info h3 {
@@ -21,6 +23,8 @@ section#contact {
   line-height: 1.7;
   margin-bottom: 36px;
   font-size: 0.95rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .contact-items {
@@ -112,18 +116,22 @@ section#contact {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  min-width: 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
 .form-group label {
@@ -174,6 +182,9 @@ section#contact {
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 500;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .form-status.success {
@@ -218,6 +229,8 @@ section#contact {
   overflow: hidden;
   border: 1px solid var(--border-color);
   transition: border-color var(--transition);
+  min-width: 0;
+  width: 100%;
 }
 
 .phone-input-wrap:focus-within {
@@ -264,6 +277,11 @@ section#contact {
     grid-template-columns: 1fr;
     gap: 40px;
   }
+
+  .contact-info,
+  .contact-form {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -277,11 +295,18 @@ section#contact {
 
   .contact-form {
     padding: 24px;
+    overflow: hidden;
   }
 
   .contact-item-value {
     font-size: 0.85rem;
     word-break: break-all;
+  }
+
+  .country-code-select {
+    font-size: 0.82rem;
+    padding: 11px 6px;
+    min-width: 0;
   }
 }
 
