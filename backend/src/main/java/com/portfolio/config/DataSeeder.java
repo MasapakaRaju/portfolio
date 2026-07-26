@@ -137,7 +137,7 @@ public class DataSeeder implements CommandLineRunner {
         exp2.setEndDate("Mar 2026");
         exp2.setIsCurrent(false);
         exp2.setDescription("Owned backend API and microservice delivery across design, coding, testing, deployment, optimization, and production readiness.");
-        exp2.setHighlights(Arrays.asList("Architected 12+ enterprise-grade microservices using Java 17 and Spring Boot, ensuring high availability and reliability for distributed data management platforms.",
+        exp2.setHighlights(Arrays.asList("Developed 12+ enterprise-grade microservices using Java 17 and Spring Boot, ensuring high availability and reliability for distributed data management platforms.",
                 "Implemented AI-native engineering workflows using GitHub Copilot and Claude to automate unit test generation and refactor legacy code, increasing sprint velocity by 25%.",
                 "Optimized P99 API response latency by 35% through SQL query refactoring and Redis caching, handling highconcurrency workloads in production environments.",
                 "Spearheaded security remediation for 15+ critical vulnerabilities identified via Black Duck, ensuring 100% compliance with SOC2 and enterprise security standards.",
