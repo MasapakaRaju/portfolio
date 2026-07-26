@@ -23,31 +23,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ==================== CHANGE DETECTION ====================
-  changes:
-    name: Detect Changes
-    runs-on: ubuntu-latest
-    outputs:
-      backend: ${{ steps.filter.outputs.backend }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            backend:
-              - 'backend/**'
-            frontend:
-              - 'frontend/**'
-
   # ==================== FRONTEND ====================
   frontend-validate:
     name: Frontend - Validate
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.frontend == 'true'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -98,8 +77,6 @@ jobs:
   backend-validate:
     name: Backend - Validate
     runs-on: ubuntu-latest
-    needs: changes
-    if: needs.changes.outputs.backend == 'true'
     services:
       postgres:
         image: postgres:16-alpine
@@ -159,12 +136,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    needs: [ changes, backend-validate, frontend-validate ]
-    if: |
-      always() &&
-      (needs.changes.outputs.backend == 'true' || needs.changes.outputs.frontend == 'true') &&
-      (needs.backend-validate.result == 'success' || needs.backend-validate.result == 'skipped') &&
-      (needs.frontend-validate.result == 'success' || needs.frontend-validate.result == 'skipped')
+    needs: [ backend-validate, frontend-validate ]
     permissions:
       contents: read
       security-events: write
@@ -173,7 +145,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        if: needs.changes.outputs.backend == 'true'
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -181,7 +152,6 @@ jobs:
           cache: maven
 
       - name: Cache OWASP NVD Data
-        if: needs.changes.outputs.backend == 'true'
         uses: actions/cache@v4
         with:
           path: |
@@ -192,7 +162,6 @@ jobs:
             ${{ runner.os }}-dependency-check-
 
       - name: Run OWASP Dependency Check (Backend)
-        if: needs.changes.outputs.backend == 'true'
         working-directory: ./backend
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
@@ -217,7 +186,6 @@ jobs:
         continue-on-error: true
 
       - name: Run npm audit (Frontend)
-        if: needs.changes.outputs.frontend == 'true'
         working-directory: ./frontend
         run: npm audit --audit-level=moderate || echo "npm audit completed"
         continue-on-error: true
@@ -226,8 +194,8 @@ jobs:
   docker-build:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
-    needs: [ changes, security-scan ]
-    if: github.event_name == 'push' && needs.changes.outputs.backend == 'true'
+    needs: security-scan
+    if: github.event_name == 'push'
     permissions:
       contents: read
       packages: write
@@ -257,7 +225,6 @@ jobs:
   deploy-render:
     name: Deploy to Render
     needs: docker-build
-    if: always() && needs.docker-build.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render Deploy
@@ -273,8 +240,8 @@ jobs:
   deploy-to-github-pages:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
-    needs: [ changes, frontend-validate ]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && needs.changes.outputs.frontend == 'true'
+    needs: deploy-render
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     permissions:
       contents: read
       pages: write
@@ -338,7 +305,7 @@ jobs:
   notify:
     name: Send Notifications
     runs-on: ubuntu-latest
-    needs: [ changes, frontend-validate, backend-validate, security-scan, deploy-render, deploy-to-github-pages ]
+    needs: [frontend-validate, backend-validate, security-scan, deploy-render, deploy-to-github-pages]
     if: always()
     steps:
       - name: Check job results and build message
