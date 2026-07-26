@@ -227,9 +227,9 @@ jobs:
         run: |
           curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
 
-      - name: Wait 5 minutes for Render to deploy
+      - name: Wait for Render to deploy
         run: |
-          echo "Waiting 300 seconds for Render backend to fully deploy..."
+          echo "Waiting 100 seconds for Render backend to fully deploy..."
           sleep 100
           echo "Wait complete."
 
