@@ -78,6 +78,14 @@ export function cachePortfolio(data: PortfolioData) {
   }
 }
 
+export function clearCachedPortfolio() {
+  try {
+    window.sessionStorage.removeItem(PORTFOLIO_CACHE_KEY);
+  } catch {
+    // Ignore storage failures; the public page will still revalidate on its cache policy.
+  }
+}
+
 export async function submitContact(data: ContactForm): Promise<{ message: string }> {
   const res = await fetch(`${API_BASE_URL}/contact`, {
     method: 'POST',

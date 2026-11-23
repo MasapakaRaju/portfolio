@@ -232,7 +232,7 @@ The Vite dev server proxies `/api` requests to `http://localhost:8080`.
 
 ## Testing
 
-### Backend (62 tests)
+### Backend (63 tests)
 
 ```bash
 cd backend
@@ -291,7 +291,7 @@ backend-validate ──┘         │                  │
 
 ### Backend Validate
 1. **Compile check** — `mvn compile` catches compilation errors early
-2. **All tests** — `mvn test` runs 62 tests against a PostgreSQL 16 service container, including `DataSeederIntegrationTest` which validates DB schema (entity column lengths vs actual data)
+2. **All tests** — `mvn test` runs 63 tests against a PostgreSQL 16 service container, including `DataSeederIntegrationTest` which validates DB schema and ensures restarts preserve admin edits
 3. **JAR verification** — `mvn package -DskipTests` confirms the final artifact builds
 4. **Upload artifacts** — test results and JAR for downstream jobs
 
@@ -324,8 +324,9 @@ The application uses Spring Data JPA with `ddl-auto: update` to auto-create tabl
 | `admin_otp_challenges` | Expiring OTP HMACs, expiry, and verification attempt counts |
 | `admin_sessions` | Hashed opaque session tokens, expiry, and revocation time |
 | `admin_auth_attempts` | HMAC-pseudonymized requester IDs for rate limiting |
+| `portfolio_seed_state` | Records one-time initial seeding so later restarts never overwrite admin edits |
 
-Data is seeded on application startup via `DataSeeder.java`.
+Initial portfolio data is seeded once via `DataSeeder.java` when the portfolio tables are empty. Subsequent application restarts preserve administrator changes.
 
 ## Admin sign in
 
@@ -341,7 +342,7 @@ Before sign in can work, configure these Render backend environment variables:
 
 The admin login is disabled until `ADMIN_USERNAME`, `ADMIN_OTP_HMAC_SECRET`, and `ADMIN_SLACK_WEBHOOK_URL` are present. The backend creates or updates its one active admin identity on startup. Each OTP is random, expires after five minutes, is single-use, and allows five verification attempts. Requests are rate-limited; successful verification creates a random, opaque session that expires after 30 minutes. Only its SHA-256 hash is stored in the database. The browser keeps the raw session token in memory only, so refreshing the admin page signs out.
 
-The admin name is an identifier, not a password. Its SHA-256 hash is not used to encrypt the database or other data. Database credentials and the Slack webhook remain backend-only; they are never returned to the admin page. Public portfolio and contact-form endpoints remain public for the portfolio to function. Admin-only data-management endpoints should require the admin session before they are added.
+The admin name is an identifier, not a password. Its SHA-256 hash is not used to encrypt the database or other data. Database credentials and Slack webhooks remain backend-only; they are never returned to the admin page. The authenticated dashboard can edit profile details, skills, experience, and projects, and can review contact messages. Changes persist in the database. Contact form submissions continue to use the existing contact Slack webhook. Public portfolio and contact-form endpoints remain public for the portfolio to function; all admin data-management endpoints require the admin session.
 
 ---
 

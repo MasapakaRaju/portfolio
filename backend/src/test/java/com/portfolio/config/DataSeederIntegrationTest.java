@@ -37,6 +37,9 @@ class DataSeederIntegrationTest {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private DataSeeder dataSeeder;
+
     @Test
     void contextLoadsAndSeederPopulatesData() {
         assertFalse(personalInfoRepository.findAll().isEmpty(), "PersonalInfo should be seeded");
@@ -52,5 +55,19 @@ class DataSeederIntegrationTest {
                 .flatMap(e -> e.getHighlights().stream())
                 .count();
         assertTrue(highlightCount > 0, "Experience highlights should be persisted without varchar errors");
+    }
+
+    @Test
+    void seederDoesNotOverwritePortfolioEditsOnRestart() {
+        var profile = personalInfoRepository.findAll().get(0);
+        String originalName = profile.getName();
+        profile.setName("Admin edited profile");
+        personalInfoRepository.saveAndFlush(profile);
+
+        dataSeeder.run();
+
+        assertEquals("Admin edited profile", personalInfoRepository.findById(profile.getId()).orElseThrow().getName());
+        profile.setName(originalName);
+        personalInfoRepository.saveAndFlush(profile);
     }
 }

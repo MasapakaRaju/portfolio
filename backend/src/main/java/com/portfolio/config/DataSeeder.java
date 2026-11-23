@@ -4,16 +4,19 @@ import com.portfolio.model.Experience;
 import com.portfolio.model.PersonalInfo;
 import com.portfolio.model.Project;
 import com.portfolio.model.Skill;
+import com.portfolio.model.PortfolioSeedState;
 import com.portfolio.repository.ExperienceRepository;
 import com.portfolio.repository.PersonalInfoRepository;
 import com.portfolio.repository.ProjectRepository;
 import com.portfolio.repository.SkillRepository;
+import com.portfolio.repository.PortfolioSeedStateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
@@ -23,18 +26,25 @@ public class DataSeeder implements CommandLineRunner {
     private final SkillRepository skillRepository;
     private final ExperienceRepository experienceRepository;
     private final ProjectRepository projectRepository;
+    private final PortfolioSeedStateRepository seedStateRepository;
 
     @Override
     public void run(String... args) {
-        personalInfoRepository.deleteAll();
-        skillRepository.deleteAll();
-        experienceRepository.deleteAll();
-        projectRepository.deleteAll();
+        if (seedStateRepository.existsById("initial-portfolio")) return;
 
-        seedPersonalInfo();
-        seedSkills();
-        seedExperience();
-        seedProjects();
+        boolean databaseHasPortfolioData = personalInfoRepository.count() > 0
+                || skillRepository.count() > 0
+                || experienceRepository.count() > 0
+                || projectRepository.count() > 0;
+
+        if (!databaseHasPortfolioData) {
+            seedPersonalInfo();
+            seedSkills();
+            seedExperience();
+            seedProjects();
+        }
+
+        seedStateRepository.save(new PortfolioSeedState("initial-portfolio", Instant.now()));
     }
 
     private void seedPersonalInfo() {

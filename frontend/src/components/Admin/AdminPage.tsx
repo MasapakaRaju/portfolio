@@ -1,5 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { API_BASE_URL } from '../../api/portfolio'
+import AdminDashboard from './AdminDashboard'
 import './AdminPage.css'
 
 type AdminStep = 'name' | 'otp' | 'welcome'
@@ -76,7 +77,7 @@ export default function AdminPage() {
     }
   }
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     if (sessionToken) {
       await fetch(`${API_BASE_URL}/admin/auth/logout`, {
         method: 'POST',
@@ -90,7 +91,9 @@ export default function AdminPage() {
     setNotice('')
     setError('')
     setStep('name')
-  }
+  }, [sessionToken])
+
+  if (step === 'welcome' && sessionToken) return <AdminDashboard token={sessionToken} onSignOut={logout} />
 
   return (
     <main className="admin-shell">
@@ -99,7 +102,7 @@ export default function AdminPage() {
       <a className="admin-back-link" href={`${import.meta.env.BASE_URL}`}>← Back to portfolio</a>
 
       <section className="admin-card" aria-labelledby="admin-heading">
-        <div className="admin-mark" aria-hidden="true">MR</div>
+        {step !== 'welcome' && <div className="admin-mark" aria-hidden="true">MR</div>}
         <p className="admin-eyebrow">PRIVATE AREA</p>
         <h1 id="admin-heading">{step === 'welcome' ? 'Welcome, Admin' : 'Admin sign in'}</h1>
         <p className="admin-intro">
@@ -141,14 +144,6 @@ export default function AdminPage() {
               setNotice('')
             }}>Use a different admin name</button>
           </form>
-        )}
-
-        {step === 'welcome' && (
-          <div className="admin-welcome">
-            <span className="admin-session-indicator"><span /> Secure session active · 30 minutes</span>
-            <p>This protected area is ready for admin-only portfolio tools.</p>
-            <button className="btn btn-outline admin-submit" onClick={logout}>Sign out</button>
-          </div>
         )}
 
         {notice && <p className="admin-notice" role="status">{notice}</p>}
