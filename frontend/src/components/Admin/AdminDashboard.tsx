@@ -351,7 +351,7 @@ function SkillsSection({ data, draft, setDraft, editingId, setEditingId, busy, o
       {!groupedSkills.length ? <p className="admin-skills-empty">No skills yet. Add your first skill above.</p> :
         <div className="admin-skills-groups">{groupedSkills.map(group => <section className="admin-skill-group" key={group.category}>
           <h3>{group.category}</h3>
-          <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Skill</th><th>Proficiency</th><th>Actions</th></tr></thead><tbody>
+          <div className="admin-table-scroll"><table className="admin-table admin-data-table admin-skills-table"><thead><tr><th>Skill</th><th>Proficiency</th><th>Actions</th></tr></thead><tbody>
             {group.skills.map(skill => <tr key={skill.id}><td className="strong-cell">{skill.name}</td><td><Meter value={skill.proficiency} /></td>
               <td><RowActions onEdit={() => beginEdit(skill)} onDelete={() => onDelete('skill', `/admin/skills/${skill.id}`)} /></td></tr>)}
           </tbody></table></div>
@@ -390,7 +390,7 @@ function ExperienceSection({ data, draft, setDraft, editingId, setEditingId, bus
   return <section className="admin-panel">
     <PanelHeading title="Work experience" description="Manage roles, descriptions, dates, and highlights." action={!draft && <button className="admin-action-button" onClick={() => { setEditingId(null); setDraft({ ...emptyExperience }) }}>+ Add experience</button>} />
     {draft && <ExperienceEditor draft={draft} setDraft={setDraft} busy={busy} onSave={onSave} onCancel={() => { setDraft(null); setEditingId(null) }} editing={editingId !== null} />}
-    <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Role</th><th>Company</th><th>Dates</th><th>Highlights</th><th>Actions</th></tr></thead><tbody>
+    <div className="admin-table-scroll"><table className="admin-table admin-data-table admin-experience-table"><thead><tr><th>Role</th><th>Company</th><th>Dates</th><th>Highlights</th><th>Actions</th></tr></thead><tbody>
       {data.experiences.map(experience => <tr key={experience.id}><td className="strong-cell">{experience.role}</td><td>{experience.company}</td>
         <td>{experience.startDate} — {experience.isCurrent ? 'Present' : experience.endDate}</td><td>{experience.highlights.length}</td>
         <td><RowActions onEdit={() => beginEdit(experience)} onDelete={() => onDelete('experience', `/admin/experience/${experience.id}`)} /></td></tr>)}
@@ -430,7 +430,7 @@ function ProjectsSection({ data, draft, setDraft, editingId, setEditingId, busy,
   return <section className="admin-panel">
     <PanelHeading title="Projects" description="Add a project with its stack, repository, and demo links." action={!draft && <button className="admin-action-button" onClick={() => { setEditingId(null); setDraft({ ...emptyProject }) }}>+ Add project</button>} />
     {draft && <ProjectEditor draft={draft} setDraft={setDraft} busy={busy} onSave={onSave} onCancel={() => { setDraft(null); setEditingId(null) }} editing={editingId !== null} />}
-    <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Project</th><th>Tech stack</th><th>Links</th><th>Featured</th><th>Actions</th></tr></thead><tbody>
+    <div className="admin-table-scroll"><table className="admin-table admin-data-table admin-project-table"><thead><tr><th>Project</th><th>Tech stack</th><th>Links</th><th>Featured</th><th>Actions</th></tr></thead><tbody>
       {data.projects.map(project => <tr key={project.id}><td className="strong-cell">{project.name}</td><td>{project.techStack}</td>
         <td className="admin-project-links">{safeLink(project.githubUrl) && <a href={safeLink(project.githubUrl)} target="_blank" rel="noopener noreferrer">GitHub</a>}
           {safeLink(project.demoUrl) && <a href={safeLink(project.demoUrl)} target="_blank" rel="noopener noreferrer">Demo</a>}
@@ -464,7 +464,7 @@ function MessagesSection({ data, token, busy, perform, onDelete }: {
 }) {
   return <section className="admin-panel">
     <PanelHeading title="Contact messages" description="Messages submitted through the public contact form. New submissions continue to notify your existing contact Slack webhook." />
-    <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Status</th><th>From</th><th>Subject</th><th>Received</th><th>Actions</th></tr></thead><tbody>
+    <div className="admin-table-scroll"><table className="admin-table admin-data-table admin-message-table"><thead><tr><th>Status</th><th>From</th><th>Subject</th><th>Received</th><th>Actions</th></tr></thead><tbody>
       {data.messages.map(message => <tr key={message.id} className={!message.isRead ? 'unread-row' : ''}>
         <td><span className={`admin-read-badge ${message.isRead ? 'read' : 'unread'}`}>{message.isRead ? 'Read' : 'New'}</span></td>
         <td><span className="strong-cell">{message.name}</span><small className="admin-cell-subtext">{message.email} · {message.phone}</small></td>

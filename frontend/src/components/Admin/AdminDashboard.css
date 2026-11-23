@@ -41,7 +41,24 @@
 .admin-table { width:100%; border-collapse:collapse; text-align:left; }
 .admin-table th,.admin-table td { padding:13px 12px; border-bottom:1px solid rgba(255,255,255,.07); color:#c9c2d2; font-size:.82rem; vertical-align:top; }
 .admin-table th { width:175px; color:#958ba2; font-weight:700; }
-.admin-data-table { min-width:680px; }
+.admin-data-table { min-width:680px; table-layout:fixed; }
+.admin-data-table th { width:auto; }
+.admin-data-table td,.admin-data-table th { overflow-wrap:anywhere; }
+.admin-experience-table th:nth-child(1) { width:16%; }
+.admin-experience-table th:nth-child(2) { width:18%; }
+.admin-experience-table th:nth-child(3) { width:17%; }
+.admin-experience-table th:nth-child(4) { width:12%; }
+.admin-experience-table th:nth-child(5) { width:37%; }
+.admin-project-table th:nth-child(1) { width:19%; }
+.admin-project-table th:nth-child(2) { width:27%; }
+.admin-project-table th:nth-child(3) { width:14%; }
+.admin-project-table th:nth-child(4) { width:12%; }
+.admin-project-table th:nth-child(5) { width:28%; }
+.admin-message-table th:nth-child(1) { width:11%; }
+.admin-message-table th:nth-child(2) { width:24%; }
+.admin-message-table th:nth-child(3) { width:21%; }
+.admin-message-table th:nth-child(4) { width:16%; }
+.admin-message-table th:nth-child(5) { width:28%; }
 .admin-data-table thead th { color:#958ba2; font-size:.69rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
 .admin-data-table tbody tr:last-child td { border-bottom:0; }
 .strong-cell { color:#f4eefc !important; font-weight:800; }

@@ -75,7 +75,7 @@ input, textarea {
 }
 
 section {
-  padding: 100px 0;
+  padding: 72px 0;
   position: relative;
 }
 
@@ -107,7 +107,7 @@ section {
   text-align: center;
   color: var(--text-secondary);
   font-size: 1rem;
-  margin: 0 auto 56px;
+  margin: 0 auto 40px;
   max-width: 700px;
 }
 
@@ -254,7 +254,7 @@ section {
 
 @media (max-width: 900px) {
   section {
-    padding: 80px 0;
+    padding: 60px 0;
   }
 
   .container {
@@ -264,7 +264,7 @@ section {
 
 @media (max-width: 600px) {
   section {
-    padding: 64px 0;
+    padding: 48px 0;
   }
 
   .container {
@@ -277,13 +277,13 @@ section {
 
   .section-subtitle {
     font-size: 0.9rem;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
   }
 }
 
 @media (max-width: 380px) {
   section {
-    padding: 48px 0;
+    padding: 40px 0;
   }
 
   .container {
