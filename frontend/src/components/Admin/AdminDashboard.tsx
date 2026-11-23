@@ -120,6 +120,12 @@ export default function AdminDashboard({ token, onSignOut }: AdminDashboardProps
 
   useEffect(() => { void loadDashboard() }, [loadDashboard])
 
+  useEffect(() => {
+    if (!notice) return
+    const timeout = window.setTimeout(() => setNotice(''), 3500)
+    return () => window.clearTimeout(timeout)
+  }, [notice])
+
   const perform = async (action: () => Promise<unknown>, successMessage: string, reload = true): Promise<boolean> => {
     setBusy(true)
     setError('')
@@ -207,6 +213,7 @@ export default function AdminDashboard({ token, onSignOut }: AdminDashboardProps
 
   return (
     <div className="admin-dashboard">
+      {notice && <div className="admin-toast" role="status" aria-live="polite">{notice}</div>}
       <header className="admin-topbar">
         <a className="admin-dashboard-brand" href={`${import.meta.env.BASE_URL}`}>MR <span>PORTFOLIO ADMIN</span></a>
         <div className="admin-topbar-actions">
@@ -241,7 +248,6 @@ export default function AdminDashboard({ token, onSignOut }: AdminDashboardProps
             </button>
           </div>
 
-          {notice && <div className="admin-banner success" role="status">{notice}</div>}
           {error && <div className="admin-banner error" role="alert">{error}</div>}
           {loading && data && <div className="admin-inline-loading">Updating portfolio data…</div>}
 

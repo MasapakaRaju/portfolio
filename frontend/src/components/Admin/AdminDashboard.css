@@ -89,6 +89,8 @@
 .admin-banner { margin-bottom:16px; padding:11px 14px; border:1px solid; border-radius:10px; font-size:.82rem; }
 .admin-banner.success { border-color:rgba(83,210,130,.25); background:rgba(83,210,130,.08); color:#a7edbc; }
 .admin-banner.error { border-color:rgba(255,100,130,.28); background:rgba(255,100,130,.08); color:#ffafbc; }
+.admin-toast { position:fixed; z-index:1000; top:18px; left:50%; width:max-content; max-width:min(92vw,560px); padding:13px 20px; transform:translateX(-50%); border:1px solid rgba(83,210,130,.35); border-radius:12px; background:rgba(18,35,28,.96); box-shadow:0 16px 44px rgba(0,0,0,.38); color:#b9f2ca; font-size:.9rem; font-weight:750; text-align:center; animation:admin-toast-in .22s ease-out both; }
+@keyframes admin-toast-in { from { opacity:0; transform:translate(-50%,-12px); } to { opacity:1; transform:translate(-50%,0); } }
 .admin-inline-loading { margin:0 0 12px; color:#c7a7f1; font-size:.77rem; }
 .admin-loading { display:flex; min-height:100vh; align-items:center; justify-content:center; gap:12px; background:#0b0910; color:#ddd2ea; }
 .admin-spinner { width:19px; height:19px; border:2px solid rgba(255,255,255,.2); border-top-color:#bd91ff; border-radius:50%; animation:admin-spin .8s linear infinite; }
