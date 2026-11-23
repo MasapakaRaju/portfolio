@@ -6,6 +6,8 @@ COPY src ./src
 RUN mvn clean package -DskipTests -q
 
 FROM eclipse-temurin:17-jre-jammy
+ARG APP_COMMIT
+ENV APP_COMMIT=${APP_COMMIT}
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080

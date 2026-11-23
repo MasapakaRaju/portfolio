@@ -216,6 +216,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./backend
+          build-args: |
+            APP_COMMIT=${{ github.sha }}
           push: true
           tags: |
             ghcr.io/${{ env.IMAGE_NAME }}/backend:latest
@@ -229,13 +231,43 @@ jobs:
     steps:
       - name: Trigger Render Deploy
         run: |
-          curl -s -o /dev/null -w "%{http_code}" -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          status=$(curl --silent --output /dev/null --write-out "%{http_code}" -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}" || true)
+          case "$status" in
+            2*) echo "Render accepted the deploy request (HTTP $status)." ;;
+            *) echo "Render deploy request failed (HTTP ${status:-000})."; exit 1 ;;
+          esac
 
       - name: Wait for Render to deploy
         run: |
           echo "Waiting 100 seconds for Render backend to fully deploy..."
           sleep 100
           echo "Wait complete."
+
+      - name: Verify portfolio API and database connection
+        env:
+          API_BASE_URL: ${{ secrets.VITE_API_URL }}
+          EXPECTED_COMMIT: ${{ github.sha }}
+        run: |
+          if [ -z "$API_BASE_URL" ]; then
+            echo "VITE_API_URL is not configured; cannot verify the deployed backend."
+            exit 1
+          fi
+
+          API_URL="${API_BASE_URL%/}/api/portfolio"
+          HEALTH_URL="${API_BASE_URL%/}/health"
+          for attempt in $(seq 1 18); do
+            health=$(curl --silent --show-error --fail --max-time 10 "$HEALTH_URL" || true)
+            portfolio_status=$(curl --silent --show-error --output /dev/null --write-out "%{http_code}" --max-time 10 "$API_URL" || true)
+            if echo "$health" | grep -Fq "\"commit\":\"$EXPECTED_COMMIT\"" && [ "$portfolio_status" = "200" ]; then
+              echo "Deployed backend is running commit $EXPECTED_COMMIT and its database-backed endpoint returned HTTP 200."
+              exit 0
+            fi
+            echo "Waiting for backend commit $EXPECTED_COMMIT and database-backed API (attempt $attempt/18)."
+            sleep 10
+          done
+
+          echo "Portfolio API did not become healthy after deployment."
+          exit 1
 
   deploy-to-github-pages:
     name: Deploy to GitHub Pages
