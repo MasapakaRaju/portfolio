@@ -73,9 +73,13 @@
 .admin-row-button.danger:hover { border-color:rgba(255,100,130,.5); background:rgba(255,70,100,.1); }
 .admin-empty-row { padding:24px !important; color:#93899e !important; text-align:center; }
 .admin-skills-groups { display:grid; gap:18px; }
-.admin-skill-group { overflow:hidden; border:1px solid rgba(255,255,255,.07); border-radius:12px; background:rgba(255,255,255,.018); }
+.admin-skill-group { overflow:hidden; padding:0; border:1px solid rgba(255,255,255,.07); border-radius:12px; background:rgba(255,255,255,.018); }
 .admin-skill-group h3 { margin:0; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(168,92,255,.055); color:#cfb4f2; font-size:.77rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
 .admin-skill-group .admin-table th,.admin-skill-group .admin-table td { padding:11px 14px; }
+.admin-skill-group .admin-data-table { min-width:0; table-layout:fixed; }
+.admin-skill-group .admin-data-table th:nth-child(1) { width:27%; }
+.admin-skill-group .admin-data-table th:nth-child(2) { width:40%; }
+.admin-skill-group .admin-data-table th:nth-child(3) { width:33%; }
 .admin-skills-empty { padding:12px; color:#a79daf; font-size:.84rem; }
 .admin-check-field { display:flex; align-items:center; gap:9px; color:#c9bfd5; font-size:.8rem; }
 .admin-check-field input { accent-color:#a855f7; }
@@ -96,4 +100,4 @@
 .admin-spinner { width:19px; height:19px; border:2px solid rgba(255,255,255,.2); border-top-color:#bd91ff; border-radius:50%; animation:admin-spin .8s linear infinite; }
 @keyframes admin-spin { to { transform:rotate(360deg); } }
 @media (max-width:850px) { .admin-dashboard-layout { grid-template-columns:1fr; } .admin-sidebar { padding:12px 16px; border-right:0; border-bottom:1px solid rgba(255,255,255,.08); } .admin-sidebar nav { display:flex; overflow-x:auto; } .admin-nav-item { width:auto; flex:0 0 auto; } .admin-sidebar-label,.admin-sidebar-back { display:none; } }
-@media (max-width:600px) { .admin-topbar { padding:12px 16px; } .admin-dashboard-brand span { display:none; } .admin-topbar-actions { gap:10px; } .admin-topbar .admin-session-indicator { font-size:0; gap:0; } .admin-topbar .admin-session-indicator span { width:9px; height:9px; } .admin-main { padding:22px 15px; } .admin-page-heading { align-items:flex-start; flex-direction:column; } .admin-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-quick-links { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-editor-grid { grid-template-columns:1fr; } .admin-field.wide,.admin-editor-actions.wide { grid-column:auto; } .admin-panel-heading { align-items:flex-start; flex-direction:column; } }
+@media (max-width:600px) { .admin-topbar { padding:12px 16px; } .admin-dashboard-brand span { display:none; } .admin-topbar-actions { gap:10px; } .admin-topbar .admin-session-indicator { font-size:0; gap:0; } .admin-topbar .admin-session-indicator span { width:9px; height:9px; } .admin-main { padding:22px 15px; } .admin-page-heading { align-items:flex-start; flex-direction:column; } .admin-stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-quick-links { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-editor-grid { grid-template-columns:1fr; } .admin-field.wide,.admin-editor-actions.wide { grid-column:auto; } .admin-panel-heading { align-items:flex-start; flex-direction:column; } .admin-skill-group .admin-data-table { min-width:560px; table-layout:auto; } }
