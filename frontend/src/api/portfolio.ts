@@ -7,6 +7,7 @@ if (!RAW_BASE && import.meta.env.PROD) {
   console.error('[portfolio] VITE_API_URL is not set — API calls will fail in production.');
 }
 const PORTFOLIO_CACHE_KEY = 'portfolio:data';
+export const PORTFOLIO_CACHE_TTL_MS = 5 * 60 * 1000;
 const DEFAULT_RETRIES = 3;
 // Render may need up to a couple of minutes to wake a sleeping service.
 const REQUEST_TIMEOUT_MS = 120000;
@@ -48,10 +49,19 @@ export async function fetchPortfolio(): Promise<PortfolioData> {
   throw lastError instanceof Error ? lastError : new Error('Failed to fetch portfolio data');
 }
 
-export function getCachedPortfolio(): PortfolioData | null {
+type CachedPortfolio = {
+  data: PortfolioData;
+  cachedAt: number;
+};
+
+export function getCachedPortfolio(): CachedPortfolio | null {
   try {
-    const cached = window.localStorage.getItem(PORTFOLIO_CACHE_KEY);
-    return cached ? JSON.parse(cached) as PortfolioData : null;
+    const raw = window.sessionStorage.getItem(PORTFOLIO_CACHE_KEY);
+    if (!raw) return null;
+
+    const cached = JSON.parse(raw) as Partial<CachedPortfolio>;
+    if (!cached.data || typeof cached.cachedAt !== 'number') return null;
+    return cached as CachedPortfolio;
   } catch {
     return null;
   }
@@ -59,7 +69,10 @@ export function getCachedPortfolio(): PortfolioData | null {
 
 export function cachePortfolio(data: PortfolioData) {
   try {
-    window.localStorage.setItem(PORTFOLIO_CACHE_KEY, JSON.stringify(data));
+    window.sessionStorage.setItem(PORTFOLIO_CACHE_KEY, JSON.stringify({
+      data,
+      cachedAt: Date.now(),
+    } satisfies CachedPortfolio));
   } catch {
     // Ignore storage failures; live API data can still render the app.
   }

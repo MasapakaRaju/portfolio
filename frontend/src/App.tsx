@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { cachePortfolio, fetchPortfolio, getCachedPortfolio } from './api/portfolio'
+import {
+  cachePortfolio,
+  fetchPortfolio,
+  getCachedPortfolio,
+  PORTFOLIO_CACHE_TTL_MS,
+} from './api/portfolio'
 import type { PortfolioData } from './types'
 import Navbar from './components/Navbar/Navbar'
 import Hero from './components/Hero/Hero'
@@ -11,6 +16,23 @@ import Contact from './components/Contact/Contact'
 import Footer from './components/Footer/Footer'
 import ScrollProgress from './components/Effects/ScrollProgress'
 
+function getNavigationType() {
+  return performance.getEntriesByType('navigation')[0]?.toJSON().type
+}
+
+function getBuildResources(documentToCheck: Document, baseUrl: string) {
+  return Array.from(documentToCheck.querySelectorAll<HTMLScriptElement | HTMLLinkElement>(
+    'script[type="module"][src], link[rel="stylesheet"][href]'
+  ))
+    .map(resource => {
+      const path = resource instanceof HTMLScriptElement ? resource.src : resource.href
+      return path ? new URL(path, baseUrl).pathname : ''
+    })
+    .filter(Boolean)
+    .sort()
+    .join('|')
+}
+
 export default function App() {
   const [data, setData] = useState<PortfolioData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -20,10 +42,19 @@ export default function App() {
 
   useEffect(() => {
     const cached = getCachedPortfolio()
+    const forceRefresh = retry > 0 || getNavigationType() === 'reload'
 
     if (cached) {
-      setData(cached)
+      setData(cached.data)
       setLoading(false)
+      setError(null)
+
+      const cacheIsFresh = Date.now() - cached.cachedAt < PORTFOLIO_CACHE_TTL_MS
+      if (cacheIsFresh && !forceRefresh) {
+        setRefreshing(false)
+        return
+      }
+
       setRefreshing(true)
     }
 
@@ -43,6 +74,42 @@ export default function App() {
         setRefreshing(false)
       })
   }, [retry])
+
+  useEffect(() => {
+    let checkingForUpdate = false
+
+    const checkForUpdate = async () => {
+      if (checkingForUpdate || document.visibilityState !== 'visible') return
+      checkingForUpdate = true
+
+      try {
+        const url = new URL(window.location.pathname, window.location.origin)
+        url.searchParams.set('__build_check', String(Date.now()))
+        const response = await fetch(url, { cache: 'no-store' })
+        if (!response.ok) return
+
+        const html = await response.text()
+        const latestDocument = new DOMParser().parseFromString(html, 'text/html')
+        const currentBuild = getBuildResources(document, document.baseURI)
+        const latestBuild = getBuildResources(latestDocument, url.href)
+
+        if (currentBuild && latestBuild && currentBuild !== latestBuild) {
+          window.location.reload()
+        }
+      } catch {
+        // The next check can retry if the network is temporarily unavailable.
+      } finally {
+        checkingForUpdate = false
+      }
+    }
+
+    const interval = window.setInterval(checkForUpdate, 60_000)
+    document.addEventListener('visibilitychange', checkForUpdate)
+    return () => {
+      window.clearInterval(interval)
+      document.removeEventListener('visibilitychange', checkForUpdate)
+    }
+  }, [])
 
   useEffect(() => {
     if (loading || !data) return
