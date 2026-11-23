@@ -50,4 +50,28 @@ class RenderDatabaseUrlInitializerTest {
         assertEquals("configured-user", environment.getProperty("SPRING_DATASOURCE_USERNAME"));
         assertEquals("configured-password", environment.getProperty("SPRING_DATASOURCE_PASSWORD"));
     }
+
+    @Test
+    void routesSupabaseSharedPoolerDatabaseUrlThroughTransactionMode() {
+        MockEnvironment environment = new MockEnvironment()
+                .withProperty("DATABASE_URL", "postgresql://postgres.project:p%2Bass@aws-0-ap-southeast-2.pooler.supabase.com:5432/postgres?sslmode=require");
+
+        initializer.postProcessEnvironment(environment, new SpringApplication());
+
+        assertEquals("jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0",
+                environment.getProperty("spring.datasource.url"));
+        assertEquals("postgres.project", environment.getProperty("spring.datasource.username"));
+        assertEquals("p+ass", environment.getProperty("spring.datasource.password"));
+    }
+
+    @Test
+    void routesSupabaseJdbcUrlThroughTransactionModeAndAvoidsDuplicateParameter() {
+        MockEnvironment environment = new MockEnvironment()
+                .withProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:5432/postgres?sslmode=require&prepareThreshold=4");
+
+        initializer.postProcessEnvironment(environment, new SpringApplication());
+
+        assertEquals("jdbc:postgresql://aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?sslmode=require&prepareThreshold=0",
+                environment.getProperty("spring.datasource.url"));
+    }
 }
