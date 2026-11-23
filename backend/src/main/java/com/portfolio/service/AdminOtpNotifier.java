@@ -16,7 +16,7 @@ public class AdminOtpNotifier {
             .connectTimeout(Duration.ofSeconds(5))
             .build();
 
-    @Value("${app.slack.webhook-url:}")
+    @Value("${app.admin.slack-webhook-url:}")
     private String webhookUrl;
 
     public boolean send(String otp) {

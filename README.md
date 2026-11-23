@@ -337,9 +337,9 @@ Before sign in can work, configure these Render backend environment variables:
 |----------|---------|
 | `ADMIN_USERNAME` | Admin identifier. Set to `Admin@Raju` if that is the intended name. The backend stores only its SHA-256 hash in `admin_accounts`. |
 | `ADMIN_OTP_HMAC_SECRET` | A private, randomly generated secret with at least 32 characters. Used to HMAC OTPs and anonymized rate-limit keys. Keep it only in Render's secret environment variables. |
-| `SLACK_WEBHOOK_URL` | The existing private Slack incoming webhook. Use a private channel accessible only to you. |
+| `ADMIN_SLACK_WEBHOOK_URL` | A dedicated incoming webhook for the private OTP channel. This is separate from `SLACK_WEBHOOK_URL`, which remains for contact and pipeline notifications. |
 
-The admin login is disabled until the first two settings are present. The backend creates or updates its one active admin identity on startup. Each OTP is random, expires after five minutes, is single-use, and allows five verification attempts. Requests are rate-limited; successful verification creates a random, opaque session that expires after 30 minutes. Only its SHA-256 hash is stored in the database. The browser keeps the raw session token in memory only, so refreshing the admin page signs out.
+The admin login is disabled until `ADMIN_USERNAME`, `ADMIN_OTP_HMAC_SECRET`, and `ADMIN_SLACK_WEBHOOK_URL` are present. The backend creates or updates its one active admin identity on startup. Each OTP is random, expires after five minutes, is single-use, and allows five verification attempts. Requests are rate-limited; successful verification creates a random, opaque session that expires after 30 minutes. Only its SHA-256 hash is stored in the database. The browser keeps the raw session token in memory only, so refreshing the admin page signs out.
 
 The admin name is an identifier, not a password. Its SHA-256 hash is not used to encrypt the database or other data. Database credentials and the Slack webhook remain backend-only; they are never returned to the admin page. Public portfolio and contact-form endpoints remain public for the portfolio to function. Admin-only data-management endpoints should require the admin session before they are added.
 
