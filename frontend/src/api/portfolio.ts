@@ -7,8 +7,9 @@ if (!RAW_BASE && import.meta.env.PROD) {
   console.error('[portfolio] VITE_API_URL is not set — API calls will fail in production.');
 }
 const PORTFOLIO_CACHE_KEY = 'portfolio:data';
-const DEFAULT_RETRIES = 6;
-const REQUEST_TIMEOUT_MS = 30000;
+const DEFAULT_RETRIES = 3;
+// Render may need up to a couple of minutes to wake a sleeping service.
+const REQUEST_TIMEOUT_MS = 120000;
 
 function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,7 +40,7 @@ export async function fetchPortfolio(): Promise<PortfolioData> {
     } catch (error) {
       lastError = error;
       if (attempt < DEFAULT_RETRIES) {
-        await sleep(3000 * (attempt + 1));
+        await sleep(Math.min(2000 * (2 ** attempt), 15000));
       }
     }
   }

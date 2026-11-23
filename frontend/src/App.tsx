@@ -16,6 +16,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [retry, setRetry] = useState(0)
 
   useEffect(() => {
     const cached = getCachedPortfolio()
@@ -34,14 +35,14 @@ export default function App() {
       })
       .catch(() => {
         if (!cached) {
-          setError('The backend is waking up from sleep (takes ~60s on first visit). Please refresh the page.')
+          setError('The portfolio service is taking longer than expected to start. Try again in a moment.')
         }
       })
       .finally(() => {
         setLoading(false)
         setRefreshing(false)
       })
-  }, [])
+  }, [retry])
 
   useEffect(() => {
     if (loading || !data) return
@@ -70,6 +71,13 @@ export default function App() {
       <div className="error-screen">
         <h2>Oops!</h2>
         <p>{error ?? 'Something went wrong.'}</p>
+        <button className="btn btn-primary" onClick={() => {
+          setError(null)
+          setLoading(true)
+          setRetry(count => count + 1)
+        }}>
+          Try again
+        </button>
       </div>
     )
   }
