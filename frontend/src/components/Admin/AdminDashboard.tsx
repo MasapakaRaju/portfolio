@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import type { Experience, PersonalInfo, Project, Skill } from '../../types'
 import { API_BASE_URL, clearCachedPortfolio } from '../../api/portfolio'
+import { groupSkillsByCategory } from '../../utils/skills'
 import './AdminDashboard.css'
 
 type ContactMessage = {
@@ -332,6 +333,7 @@ function SkillsSection({ data, draft, setDraft, editingId, setEditingId, busy, o
   editingId: number | null; setEditingId: (id: number | null) => void; busy: boolean
   onSave: (event: FormEvent<HTMLFormElement>) => void; onDelete: (label: string, path: string) => void
 }) {
+  const groupedSkills = groupSkillsByCategory(data.skills)
   const beginEdit = (skill: Skill) => {
     setEditingId(skill.id)
     setDraft({ name: skill.name, category: skill.category, proficiency: skill.proficiency })
@@ -340,11 +342,14 @@ function SkillsSection({ data, draft, setDraft, editingId, setEditingId, busy, o
     <section className="admin-panel">
       <PanelHeading title="Skills" description="Add skills and adjust their proficiency bars." action={!draft && <button className="admin-action-button" onClick={() => { setEditingId(null); setDraft({ ...emptySkill }) }}>+ Add skill</button>} />
       {draft && <SkillEditor draft={draft} setDraft={setDraft} busy={busy} onSave={onSave} onCancel={() => { setDraft(null); setEditingId(null) }} editing={editingId !== null} />}
-      <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Skill</th><th>Category</th><th>Proficiency</th><th>Actions</th></tr></thead><tbody>
-        {data.skills.map(skill => <tr key={skill.id}><td className="strong-cell">{skill.name}</td><td>{skill.category}</td><td><Meter value={skill.proficiency} /></td>
-          <td><RowActions onEdit={() => beginEdit(skill)} onDelete={() => onDelete('skill', `/admin/skills/${skill.id}`)} /></td></tr>)}
-        {!data.skills.length && <EmptyRow columns={4} text="No skills yet. Add your first skill above." />}
-      </tbody></table></div>
+      {!groupedSkills.length ? <p className="admin-skills-empty">No skills yet. Add your first skill above.</p> :
+        <div className="admin-skills-groups">{groupedSkills.map(group => <section className="admin-skill-group" key={group.category}>
+          <h3>{group.category}</h3>
+          <div className="admin-table-scroll"><table className="admin-table admin-data-table"><thead><tr><th>Skill</th><th>Proficiency</th><th>Actions</th></tr></thead><tbody>
+            {group.skills.map(skill => <tr key={skill.id}><td className="strong-cell">{skill.name}</td><td><Meter value={skill.proficiency} /></td>
+              <td><RowActions onEdit={() => beginEdit(skill)} onDelete={() => onDelete('skill', `/admin/skills/${skill.id}`)} /></td></tr>)}
+          </tbody></table></div>
+        </section>)}</div>}
     </section>
   </div>
 }

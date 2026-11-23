@@ -72,6 +72,11 @@
 .admin-row-button.danger { color:#ff9dad; }
 .admin-row-button.danger:hover { border-color:rgba(255,100,130,.5); background:rgba(255,70,100,.1); }
 .admin-empty-row { padding:24px !important; color:#93899e !important; text-align:center; }
+.admin-skills-groups { display:grid; gap:18px; }
+.admin-skill-group { overflow:hidden; border:1px solid rgba(255,255,255,.07); border-radius:12px; background:rgba(255,255,255,.018); }
+.admin-skill-group h3 { margin:0; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.07); background:rgba(168,92,255,.055); color:#cfb4f2; font-size:.77rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; }
+.admin-skill-group .admin-table th,.admin-skill-group .admin-table td { padding:11px 14px; }
+.admin-skills-empty { padding:12px; color:#a79daf; font-size:.84rem; }
 .admin-check-field { display:flex; align-items:center; gap:9px; color:#c9bfd5; font-size:.8rem; }
 .admin-check-field input { accent-color:#a855f7; }
 .admin-read-badge { display:inline-block; padding:5px 8px; border-radius:20px; font-size:.68rem; font-weight:850; }

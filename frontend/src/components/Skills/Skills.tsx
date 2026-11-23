@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import type { Skill } from '../../types'
+import { groupSkillsByCategory } from '../../utils/skills'
 import './Skills.css'
 
 interface SkillsProps {
@@ -18,14 +19,7 @@ export default function Skills({ skills }: SkillsProps) {
     return () => observer.disconnect()
   }, [])
 
-  const grouped = skills.reduce<Record<string, Skill[]>>((acc, skill) => {
-    if (!acc[skill.category]) acc[skill.category] = []
-    acc[skill.category].push(skill)
-    return acc
-  }, {})
-
-  const categoryOrder = ['Languages', 'Backend', 'Performance', 'Databases', 'Cloud & DevOps', 'AI Workflows', 'Testing & Tools', 'Core Concepts']
-  const orderedCategories = categoryOrder.filter(c => grouped[c])
+  const groupedSkills = groupSkillsByCategory(skills)
 
   return (
     <section id="skills" ref={ref}>
@@ -34,11 +28,11 @@ export default function Skills({ skills }: SkillsProps) {
         <p className="section-subtitle fade-in">Resume-backed tools, systems, and engineering workflows</p>
 
         <div className="skills-grid">
-          {orderedCategories.map(category => (
+          {groupedSkills.map(({ category, skills: categorySkills }) => (
             <div key={category} className="skill-category fade-in">
               <h3 className="category-name">{category}</h3>
               <div className="skill-tags">
-                {grouped[category].map(skill => (
+                {categorySkills.map(skill => (
                   <div key={skill.id} className="skill-tag">
                     <span className="skill-name">{skill.name}</span>
                     <div className="skill-bar-wrap">
