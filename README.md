@@ -172,7 +172,9 @@ my-portfolio/
 ### With Docker Compose (recommended)
 
 ```bash
-docker compose up
+Copy-Item .env.example .env
+# Replace POSTGRES_PASSWORD in .env with a long random local password.
+docker compose up --build
 ```
 
 | Service | URL |
@@ -183,14 +185,7 @@ docker compose up
 
 ### Without Docker
 
-**Backend:**
-
-```bash
-cd backend
-mvn spring-boot:run
-```
-
-Requires PostgreSQL running locally on port 5432 (database: `portfolio_db`, user: `postgres`, password: `1234`). The app auto-seeds portfolio data on first startup.
+For a direct `mvn spring-boot:run`, start PostgreSQL separately and set `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` in your shell first. The app auto-seeds portfolio data on startup.
 
 **Frontend:**
 
@@ -212,7 +207,7 @@ The Vite dev server proxies `/api` requests to `http://localhost:8080`.
 |----------|---------|-------------|
 | `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/portfolio_db` | PostgreSQL connection URL |
 | `SPRING_DATASOURCE_USERNAME` | `postgres` | Database username |
-| `SPRING_DATASOURCE_PASSWORD` | `1234` | Database password |
+| `SPRING_DATASOURCE_PASSWORD` | _(required outside tests)_ | Database password; never commit it or put it in frontend variables. |
 | `SPRING_JPA_HIBERNATE_DDL_AUTO` | `update` | Hibernate DDL strategy |
 | `PORT` | `8080` | Server port |
 | `CORS_ALLOWED_ORIGINS` | `http://localhost:5173,...` | Comma-separated allowed origins |
@@ -237,7 +232,7 @@ The Vite dev server proxies `/api` requests to `http://localhost:8080`.
 
 ## Testing
 
-### Backend (55 tests)
+### Backend (62 tests)
 
 ```bash
 cd backend
@@ -296,7 +291,7 @@ backend-validate ──┘         │                  │
 
 ### Backend Validate
 1. **Compile check** — `mvn compile` catches compilation errors early
-2. **All tests** — `mvn test` runs 55 tests against a PostgreSQL 16 service container, including `DataSeederIntegrationTest` which validates DB schema (entity column lengths vs actual data)
+2. **All tests** — `mvn test` runs 62 tests against a PostgreSQL 16 service container, including `DataSeederIntegrationTest` which validates DB schema (entity column lengths vs actual data)
 3. **JAR verification** — `mvn package -DskipTests` confirms the final artifact builds
 4. **Upload artifacts** — test results and JAR for downstream jobs
 
@@ -325,8 +320,28 @@ The application uses Spring Data JPA with `ddl-auto: update` to auto-create tabl
 | `experience_highlights` | One-to-many collection of highlight strings per experience |
 | `projects` | Name, description, tech stack, URLs, featured flag, display order |
 | `contact_messages` | Submitted contact form entries with timestamps and read status |
+| `admin_accounts` | Active admin identifier SHA-256 hashes |
+| `admin_otp_challenges` | Expiring OTP HMACs, expiry, and verification attempt counts |
+| `admin_sessions` | Hashed opaque session tokens, expiry, and revocation time |
+| `admin_auth_attempts` | HMAC-pseudonymized requester IDs for rate limiting |
 
 Data is seeded on application startup via `DataSeeder.java`.
+
+## Admin sign in
+
+The admin page is available at `https://masapakaraju.github.io/portfolio/admin`. GitHub Pages serves this static frontend, so `frontend/public/404.html` routes direct visits to the app shell.
+
+Before sign in can work, configure these Render backend environment variables:
+
+| Variable | Purpose |
+|----------|---------|
+| `ADMIN_USERNAME` | Admin identifier. Set to `Admin@Raju` if that is the intended name. The backend stores only its SHA-256 hash in `admin_accounts`. |
+| `ADMIN_OTP_HMAC_SECRET` | A private, randomly generated secret with at least 32 characters. Used to HMAC OTPs and anonymized rate-limit keys. Keep it only in Render's secret environment variables. |
+| `SLACK_WEBHOOK_URL` | The existing private Slack incoming webhook. Use a private channel accessible only to you. |
+
+The admin login is disabled until the first two settings are present. The backend creates or updates its one active admin identity on startup. Each OTP is random, expires after five minutes, is single-use, and allows five verification attempts. Requests are rate-limited; successful verification creates a random, opaque session that expires after 30 minutes. Only its SHA-256 hash is stored in the database. The browser keeps the raw session token in memory only, so refreshing the admin page signs out.
+
+The admin name is an identifier, not a password. Its SHA-256 hash is not used to encrypt the database or other data. Database credentials and the Slack webhook remain backend-only; they are never returned to the admin page. Public portfolio and contact-form endpoints remain public for the portfolio to function. Admin-only data-management endpoints should require the admin session before they are added.
 
 ---
 

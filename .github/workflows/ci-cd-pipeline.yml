@@ -83,7 +83,7 @@ jobs:
         env:
           POSTGRES_DB: portfolio_db
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 1234
+          POSTGRES_PASSWORD: portfolio-ci-test-only
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -113,7 +113,7 @@ jobs:
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/portfolio_db
           SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: 1234
+          SPRING_DATASOURCE_PASSWORD: portfolio-ci-test-only
 
       - name: Verify JAR build
         working-directory: ./backend

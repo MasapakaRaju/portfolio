@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Opening portfolio…</title>
+    <script>
+      const basePath = '/portfolio';
+      const requestedPath = window.location.pathname.slice(basePath.length) || '/';
+      const requestedUrl = requestedPath + window.location.search + window.location.hash;
+      window.location.replace(basePath + '/?p=' + encodeURIComponent(requestedUrl));
+    </script>
+  </head>
+  <body><p>Opening portfolio…</p></body>
+</html>

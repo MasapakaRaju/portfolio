@@ -1,7 +1,7 @@
 import type { ContactForm, PortfolioData } from '../types';
 
 const RAW_BASE = import.meta.env.VITE_API_URL || '';
-const BASE_URL = RAW_BASE ? RAW_BASE.replace(/\/+$/, '') + '/api' : '/api';
+export const API_BASE_URL = RAW_BASE ? RAW_BASE.replace(/\/+$/, '') + '/api' : '/api';
 
 if (!RAW_BASE && import.meta.env.PROD) {
   console.error('[portfolio] VITE_API_URL is not set — API calls will fail in production.');
@@ -35,7 +35,7 @@ export async function fetchPortfolio(): Promise<PortfolioData> {
 
   for (let attempt = 0; attempt <= DEFAULT_RETRIES; attempt += 1) {
     try {
-      const res = await fetchWithTimeout(`${BASE_URL}/portfolio`);
+      const res = await fetchWithTimeout(`${API_BASE_URL}/portfolio`);
       if (!res.ok) throw new Error('Failed to fetch portfolio data');
       return res.json();
     } catch (error) {
@@ -79,7 +79,7 @@ export function cachePortfolio(data: PortfolioData) {
 }
 
 export async function submitContact(data: ContactForm): Promise<{ message: string }> {
-  const res = await fetch(`${BASE_URL}/contact`, {
+  const res = await fetch(`${API_BASE_URL}/contact`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

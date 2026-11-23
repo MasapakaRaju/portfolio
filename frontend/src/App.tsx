@@ -15,6 +15,7 @@ import Projects from './components/Projects/Projects'
 import Contact from './components/Contact/Contact'
 import Footer from './components/Footer/Footer'
 import ScrollProgress from './components/Effects/ScrollProgress'
+import AdminPage from './components/Admin/AdminPage'
 
 function getNavigationType() {
   return performance.getEntriesByType('navigation')[0]?.toJSON().type
@@ -33,7 +34,7 @@ function getBuildResources(documentToCheck: Document, baseUrl: string) {
     .join('|')
 }
 
-export default function App() {
+function PortfolioApp() {
   const [data, setData] = useState<PortfolioData | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
@@ -165,4 +166,12 @@ export default function App() {
       <Footer personalInfo={data.personalInfo} />
     </>
   )
+}
+
+export default function App() {
+  const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '')
+  const adminPath = `${basePath}/admin`.replace(/\/+$/, '').toLowerCase()
+  const currentPath = window.location.pathname.replace(/\/+$/, '').toLowerCase()
+
+  return currentPath === adminPath ? <AdminPage /> : <PortfolioApp />
 }
